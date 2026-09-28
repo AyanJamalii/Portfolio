@@ -1,0 +1,46 @@
+{
+  "personal_info": {
+    "name": "Ayan Jamali",
+    "location": "Karachi, Pakistan",
+    "degree": "BS Computer Science (BSCS) at Sir Syed University of Engineering & Technology (SSUET)",
+    "role": "Frontend Developer & AI Agent Explorer",
+    "bio": "Frontend developer with a solid foundation in HTML, CSS, JavaScript, and React. Over the past few months, I have been actively diving into Python, LangChain, and LangGraph to build AI agents with AI assistance, aiming to master writing custom agentic workflows independently over time."
+  },
+  "skills_and_stack": {
+    "frontend": ["HTML5", "CSS3", "JavaScript (ES6+)", "React.js"],
+    "ai_and_backend_learning": [
+      "Python",
+      "LangChain",
+      "LangGraph",
+      "Basic RAG (Retrieval-Augmented Generation)",
+      "Prompt Engineering"
+    ],
+    "llm_apis_experience": [
+      "Google Gemini API",
+      "OpenAI API",
+      "Anthropic Claude API",
+      "Perplexity AI API"
+    ],
+    "tools_and_platforms": [
+      "Git",
+      "GitHub",
+      "Vercel",
+      "Firebase (Basic Auth/Setup)",
+      "Figma",
+      "Framer",
+      "VS Code"
+    ],
+    "currently_learning": [
+      "Next.js",
+      "TypeScript",
+      "Building production-ready AI Agents independently"
+    ]
+  },
+  "projects": [
+    {
+      "title": "Ayan Portfolio & Personal AI Agent",
+      "description": "An interactive portfolio powered by a custom LangGraph backend agent that answers questions about Ayan's background, skills, and projects.",
+      "tech": ["Python", "LangGraph", "FastAPI", "React", "Next.js", "Gemini API"]
+    }
+  ]
+}
