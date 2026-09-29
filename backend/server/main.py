@@ -1,9 +1,14 @@
+import os
+import smtplib
+from email.message import EmailMessage
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage
+
 from agents.graph import ayan_agent
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -131,4 +136,73 @@ def chat(request: ChatRequest):
         raise HTTPException(
             status_code=500,
             detail=f"Agent error: {str(e)}"
+        )
+
+@app.post(
+    "/meeting",
+    response_model=MeetingResponse
+)
+def meeting(request: MeetingRequest):
+    try:
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(
+            os.getenv("SMTP_PORT", "587")
+        )
+        smtp_username = os.getenv("SMTP_USERNAME")
+        smtp_password = os.getenv("SMTP_PASSWORD")
+        recipient_email = os.getenv(
+            "MEETING_RECIPIENT_EMAIL"
+        )
+
+        if not all([
+            smtp_host, smtp_password, smtp_host, smtp_port
+        ]): 
+            raise HTTPException(
+                status_code=500, 
+                detail="EMail service is not configured"
+            )
+        email_message = EmailMessage()
+        email_message["subject"] = (
+            f"New Porfolio Meeting Request from {request.name}"
+        )
+
+        email_message["From"] = smtp_username
+        email_message["To"] = recipient_email
+        email_message["Reply-To"] = request.email
+        email_message.set_content(
+            f"""
+        New meeting request from your portfolio    
+
+        Name: {request.name}
+        Email: {request.email}
+        Message: {request.message}
+
+        you can directly reply to this email.
+        """
+)
+        with smtplib.SMTP(
+            smtp_host,
+            smtp_port,
+        ) as smtp:
+            smtp.starttls()
+            smtp.login(
+                smtp_username,
+                smtp_password
+            )
+            smtp.send_message(
+                email_message
+            )
+        return MeetingResponse(
+            message="Meeting request send succesfully."
+        )
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print("\n EMAIL ERROR")
+        print(type(e).__name__)
+        print(str(e))
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to send meeting request"
         )
