@@ -142,6 +142,7 @@ def chat(request: ChatRequest):
     "/meeting",
     response_model=MeetingResponse
 )
+# Portfolio backend development continues.
 def meeting(request: MeetingRequest):
     try:
         smtp_host = os.getenv("SMTP_HOST")
