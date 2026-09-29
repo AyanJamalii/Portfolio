@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage
 from agents.graph import ayan_agent
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # creating FastAPI
 
@@ -38,11 +41,32 @@ class ChatRequest(BaseModel):
         min_length=1, 
         description="Unique conversation/thread ID"
     )
-
-
 class ChatResponse(BaseModel):
     response: str
     thread_id: str
+
+# Meeting Agent
+
+class MeetingRequest(BaseModel):
+    name: str  = Field(
+        ..., 
+        min_length=1, 
+        max_length=100
+    )
+    email: str = Field(
+        ..., 
+        min_length=1,
+        max_length=200         
+    )
+    message: str = Field(
+        ...,
+        min_length=1,
+        max_length=2000
+    )
+
+class MeetingResponse(BaseModel):
+    message: str
+
 
 @app.get('/')
 def root():
