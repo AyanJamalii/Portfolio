@@ -2,6 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Image from 'next/image'
+import { Mail, } from "lucide-react";
+import FolderFloat from "@/components/FolderFloat";
+
+const skills = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Python",
+  "LangChain",
+  "LangGraph",
+  "RAG",
+  "Gemini API",
+  "OpenAI API",
+  "Git",
+  "GitHub",
+  "Tailwind CSS",
+  "Figma",
+];
 
 const heroPoints = [
   {
@@ -18,7 +39,7 @@ const heroPoints = [
   },
   {
     number: "03",
-    title: "RAG / Prompt Architecture",
+    title: "RAG Prompt Architecture",
     description:
       "Building structured AI systems with retrieval, context and reliable prompting.",
   },
@@ -28,39 +49,72 @@ const projects = [
   {
     title: "Nexus AI — Agentic Workflow Automation Platform",
     date: "August 2026 – September 2026",
-    stack: ["Next.js", "LangGraph", "Python", "Tailwind CSS", "Next.js"],
+    stack: ["Next.js", "LangGraph", "Python", "FastAPI", "Tailwind CSS"],
     description:
-      "A visual workflow builder designed for developers to orchestrate multi-agent AI systems without complex boilerplate.",
+      "A visual node-based workflow builder designed for developers to orchestrate multi-agent AI systems without dealing with complex async boilerplate code. It features a drag-and-drop canvas UI that dynamically builds graph structures and streams real-time execution outputs directly from a Python execution backend.",
     highlight:
-      "Reduced workflow setup time by 80% with visual drag-and-drop node logic.",
-    github: "#",
-    live: "#",
+      "Reduced AI workflow setup time by 80% with visual state-machine debugging and sub-second node execution.",
+    github: "",
+    live: "",
   },
   {
-    title: "OmniDocs — Semantic Knowledge Base & RAG Chat",
+    title: "OmniDocs — Enterprise RAG & Document Intelligence Platform",
     date: "July 2026 – August 2026",
-    stack: ["Next.js", "LangChain", "Python", "Tailwind CSS", "Next.js"],
+    stack: ["Next.js", "LangChain", "Python", "Qdrant", "Tailwind CSS"],
     description:
-      "An enterprise-grade document intelligence platform that transforms raw PDFs and documentation into interactive AI search interfaces.",
+      "An enterprise-grade document search and chat platform designed to transform massive unstructured PDFs and technical documentation into interactive AI search interfaces. It utilizes semantic text chunking, hybrid vector embeddings, and strict document grounding to eliminate hallucinations.",
     highlight:
       "Sub-second contextual indexing with context-aware semantic retrieval.",
-    github: "#",
-    live: "#",
+    github: "",
+    live: "",
+  },
+  {
+    title: "DevPulse — Developer Productivity & GitHub Velocity Dashboard",
+    date: "June 2026 – July 2026",
+    stack: ["Next.js", "React", "Tailwind CSS", "GitHub REST API", "Chart.js"],
+    description:
+      "A sleek dark-mode analytics platform that tracks developer commit history, pull request velocity, and repository activity metrics in real time. Built with asynchronous API fetching, custom chart components, and aggressive local caching to bypass API rate limits smoothly.",
+    highlight:
+      "Rendered complex commit heatmaps and activity graphs with zero UI lag using optimized client-side state.",
+    github: "",
+    live: "",
+  },
+  {
+    title: "VaporType — Minimalist Speed Typing & Performance Tracker",
+    date: "May 2026 – June 2026",
+    stack: ["JavaScript", "HTML5", "CSS3", "Tailwind CSS"],
+    description:
+      "A high-performance, distraction-free typing test web app featuring dark glassmorphic themes, instant WPM analytics, and error breakdown. Built using a zero-dependency, lightweight event listener engine in native JavaScript for millisecond-accurate keystroke tracking.",
+    highlight:
+      "Zero-dependency state engine providing real-time keystroke tracking and accuracy reporting.",
+    github: "",
+    live: "",
+  },
+  {
+    title: "Aether UI — Dark Mode Glassmorphic Component Library",
+    date: "April 2026 – May 2026",
+    stack: ["React", "Tailwind CSS", "Figma", "JavaScript"],
+    description:
+      "An open-source collection of reusable, highly accessible dark-mode UI components designed for modern web applications. Features modular copy-paste React/Tailwind elements engineered with built-in accessibility defaults, fluid glassmorphic borders, and ambient neon glows.",
+    highlight:
+      "Engineered fluid glassmorphism borders, glowing cards, and sleek input fields.",
+    github: "",
+    live: "",
   },
 ];
 
 export default function Home() {
+    useEffect(() => {
+  console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
+}, []);
   const [activeTab, setActiveTab] = useState<"projects" | "about">(
     "projects"
   );
 
   const [activeHeroPoint, setActiveHeroPoint] = useState(0);
 
-  /*
-   * HERO FEATURE AUTO ROTATION
-   *
-   * 01 → 02 → 03 → 01 ...
-   */
+
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveHeroPoint((current) => (current + 1) % heroPoints.length);
@@ -114,7 +168,7 @@ export default function Home() {
 
       <header className="navbar">
         <a href="#top" className="logo">
-          Ayan J.
+          Ayan    J.
         </a>
 
         <button
@@ -125,7 +179,8 @@ export default function Home() {
             })
           }
         >
-          Let&apos;s Talk <span>↗</span>
+            Let&apos;s Talk
+            <Mail size={16} strokeWidth={1.8} />
         </button>
       </header>
 
@@ -210,7 +265,7 @@ export default function Home() {
                   })
                 }
               >
-                Let&apos;s Talk ↗
+                 Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
               </button>
             </div>
           </div>
@@ -239,7 +294,7 @@ export default function Home() {
 
       <section id="projects" className="content-section projects-section">
         <div className="section-heading">
-          <span>Selected Work</span>
+          {/* <span>/Selected Work</span> */}
           <h2>Projects</h2>
         </div>
 
@@ -288,48 +343,60 @@ export default function Home() {
 
       <section id="about" className="content-section about-section">
         <div className="section-heading">
-          <span>Get to know me</span>
+          <span>/ Get to know me</span>
           <h2>About</h2>
         </div>
 
         <div className="about-grid">
           <div>
             <p className="about-large">
-              I&apos;m Ayan, a Computer Science student and aspiring AI
-              Engineer focused on building thoughtful digital experiences.
+              Hi, I&apos;m Ayan, a 19-year-old Computer Science student and aspiring AI Engineer. I build minimal frontend interfaces and orchestrate Gen AI &amp; Agentic AI workflows, exploring how intelligent code makes the web feel seamless.
             </p>
           </div>
 
           <div className="about-copy">
-            <p>
-              I started with frontend development and gradually moved deeper
-              into Python, AI engineering, LangChain, LangGraph and RAG
-              workflows.
-            </p>
+  <p>
+    I started with frontend development and gradually moved deeper
+    into Python, AI engineering, LangChain, LangGraph and RAG
+    workflows.
+  </p>
 
-            <p>
-              My current focus is combining polished interfaces with useful
-              AI systems — creating products that feel simple on the surface
-              while having powerful systems underneath.
-            </p>
+  <p>
+    My current focus is combining polished interfaces with useful
+    AI systems — creating products that feel simple on the surface
+    while having powerful systems underneath.
+  </p>
 
-            <div className="about-details">
-              <div>
-                <span>Education</span>
-                <strong>BS Computer Science</strong>
-              </div>
-
-              <div>
-                <span>University</span>
-                <strong>SSUET, Karachi</strong>
-              </div>
-
-              <div>
-                <span>Focus</span>
-                <strong>AI Engineering + Frontend</strong>
-              </div>
-            </div>
-          </div>
+  <div className="about-skills">
+    <FolderFloat
+      className="about-folder"
+      items={skills}
+      label="My Skills"
+      sublabel={`${skills.length} skills`}
+      trigger="hover"
+      closeOnSelect
+      physics
+      drift={0.5}
+      folderColor="#3f3f46"
+      frontColor="#52525b"
+      paperColor="#f5f5f5"
+      itemColor="#f5f5f5"
+      itemTextColor="#18181b"
+      labelColor="#f5f5f5"
+      width={200}
+      height={148}
+      radius={14}
+      spread={180}
+      lift={26}
+      tilt={8}
+      flapAngle={34}
+      restAngle={16}
+      openDuration={520}
+      stagger={45}
+      bounce={0.3}
+    />
+  </div>
+</div>
         </div>
       </section>
 

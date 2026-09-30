@@ -96,8 +96,8 @@ a {
 
   padding: 0 18px;
 
-  background: rgba(20, 25, 34, 0.78);
-  border: 1px solid rgba(237, 237, 237, 0.06);
+  /* background: rgba(20, 25, 34, 0.78); */
+  /* border: 1px solid rgba(237, 237, 237, 0.06); */
   border-radius: 999px;
 
   backdrop-filter: blur(18px);
@@ -106,22 +106,24 @@ a {
 
 .logo {
   font-family: "Clash Display", Arial, sans-serif;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 
 .nav-cta {
   border: 0;
   background: transparent;
   color: var(--foreground);
-
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-
   transition:
     opacity 180ms ease,
     transform 180ms ease;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .nav-cta span {
@@ -344,6 +346,7 @@ a {
 }
 
 .hero-button {
+  width: 100%;
   margin-top: 60px;
   padding: 5px 20px;
   border: 0;
@@ -355,6 +358,11 @@ a {
   transition:
     transform 180ms ease,
     opacity 180ms ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
 }
 
 .hero-button:hover {
@@ -396,37 +404,26 @@ a {
   position: sticky;
   top: 0;
   z-index: 80;
-
   width: min(calc(100% - 40px), 1380px);
-
   margin: 0 auto;
-
   display: flex;
   align-items: center;
   gap: 18px;
-
   height: 64px;
-
   background: rgba(1, 4, 11, 0.82);
   border-bottom: 1px solid var(--border);
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
 .section-tabs button {
   position: relative;
-
   padding: 0;
-
   border: 0;
   background: transparent;
-
   color: rgba(237, 237, 237, 0.4);
-
   font-family: "Clash Display", Arial, sans-serif;
-  font-size: 14px;
-
+  font-size: 22px;
   transition: color 180ms ease;
 }
 
@@ -436,14 +433,11 @@ a {
 
 .section-tabs button.active::after {
   content: "";
-
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -22px;
-
+  bottom: -16px;
   height: 1px;
-
   background: var(--foreground);
 }
 
@@ -473,16 +467,16 @@ a {
 
 .section-heading span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .section-heading h2 {
   margin: 5px 0 0;
-
   font-family: "Clash Display", Arial, sans-serif;
-  font-size: clamp(42px, 6vw, 80px);
+  font-size: clamp(42px, 6vw, 64px);
   line-height: 0.9;
   letter-spacing: -0.055em;
+  font-weight: 450;
 }
 
 /* -------------------------------- */
@@ -512,74 +506,58 @@ a {
 }
 
 .project-image {
-  min-height: 430px;
-
+  min-height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: #252932;
-  border-radius: 3px;
-
+  border-radius: 10px;
   color: rgba(237, 237, 237, 0.16);
-
   font-family: "Clash Display", Arial, sans-serif;
   font-size: 18px;
 }
 
 .project-info h3 {
   max-width: 600px;
-
   margin: 0;
-
   font-family: "Clash Display", Arial, sans-serif;
-  font-size: clamp(25px, 3vw, 42px);
+  font-size: clamp(25px, 3vw, 36px);
   line-height: 0.98;
   letter-spacing: -0.045em;
 }
 
 .project-date {
   margin: 10px 0 14px;
-
   color: var(--muted);
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .tech-list {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-
   margin-bottom: 25px;
 }
 
 .tech-list span {
-  padding: 5px 8px;
-
-  border: 1px solid rgba(237, 237, 237, 0.12);
-  border-radius: 999px;
-
-  color: rgba(237, 237, 237, 0.65);
-
-  font-size: 8px;
+    color: #edededa6;
+    border: 1px solid #ededed8f;
+    border-radius: 999px;
+    padding: 4px 20px;
+    font-size: 12px;
 }
 
 .project-copy {
   max-width: 520px;
-
   color: var(--muted);
-
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.55;
 }
-
 .project-copy strong {
   display: block;
-
   margin-top: 12px;
-
   color: var(--foreground);
-  font-size: 10px;
+  font-size: 16px;
 }
 
 .project-copy p {
@@ -595,16 +573,11 @@ a {
 }
 
 .project-actions a {
-  padding: 8px 14px;
-
-  border: 1px solid rgba(237, 237, 237, 0.2);
-  border-radius: 4px;
-
-  font-size: 9px;
-
-  transition:
-    background 180ms ease,
-    color 180ms ease;
+    border: 1px solid #ededed33;
+    border-radius: 4px;
+    padding: 8px 40px;
+    font-size: 14px;
+    transition: background .18s, color .18s;
 }
 
 .project-actions a:first-child {
@@ -635,21 +608,34 @@ a {
 
 .about-large {
   max-width: 650px;
-
   margin: 0;
-
   font-family: "Clash Display", Arial, sans-serif;
-  font-size: clamp(30px, 4vw, 58px);
-  line-height: 0.98;
+  font-size: clamp(30px, 4vw, 38px);
+  line-height: 115%;
   letter-spacing: -0.045em;
 }
 
 .about-copy {
   max-width: 520px;
-
   color: var(--muted);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.7;
+}
+.about-skills {
+  margin-top: 55px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Give the animation room without changing FolderFloat */
+  min-height: 250px;
+}
+.about-folder {
+  transition: margin-top 500ms ease;
+}
+
+.about-folder:hover {
+  margin-top: 180px;
 }
 
 .about-copy p {
@@ -834,41 +820,98 @@ a {
 }
 
 @media (max-width: 600px) {
-  .navbar {
-    top: 10px;
-    width: calc(100% - 20px);
+  .hero {
+    min-height: auto;
+    padding: 110px 20px 70px;
   }
 
-  .hero {
-    padding: 105px 18px 60px;
+  .hero-content {
+    width: 100%;
   }
 
   .hero h1 {
-    font-size: clamp(45px, 14vw, 72px);
+    font-size: clamp(42px, 12vw, 58px);
+    line-height: 0.95;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 3;
   }
 
-  .hero-feature-wrapper {
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+  }
+
+  /* =========================
+     PORTRAIT
+     ========================= */
+
+  .hero-person {
+    order: 0;
     width: 100%;
-    min-height: 255px;
+    height: 0;
+    position: relative;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .portrait {
+    width: 420px;
+    max-width: none;
+    position: absolute;
+    right: 50%;
+    top: -65px;
+    transform: translateX(50%);
+  }
+
+  /* =========================
+     TEXT + CTA
+     ========================= */
+
+  .hero-side-copy-right {
+    order: 1;
+    width: 100%;
+    margin-top: 380px;
+    position: relative;
+    z-index: 4;
+  }
+
+  .hero-side-copy-right p {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .hero-button {
+    margin-top: 20px;
+    width: 100%;
+    position: relative;
+    z-index: 4;
+  }
+
+  /* =========================
+     RAIL
+     ========================= */
+
+  .hero-feature-wrapper {
+    order: 2;
+    width: 100%;
+    min-height: 250px;
+    margin-top: 45px;
+    position: relative;
+    z-index: 4;
   }
 
   .hero-feature {
-    height: 85px;
+    height: 100px;
   }
 
   .hero-feature p {
-    max-width: 280px;
-    font-size: 8px;
-  }
-
-  .section-tabs {
-    width: 100%;
-    padding: 0 20px;
-    height: 58px;
-  }
-
-  .content-section {
-    width: calc(100% - 32px);
+    max-width: 260px;
+    font-size: 12px;
   }
 }
 
