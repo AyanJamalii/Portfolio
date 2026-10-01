@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from 'next/image'
 import { Mail, } from "lucide-react";
 import FolderFloat from "@/components/FolderFloat";
+import AISection from "@/components/AISection";
 
 const skills = [
   "HTML",
@@ -126,35 +127,33 @@ export default function Home() {
   /*
    * PROJECT / ABOUT SCROLL SPY
    */
-  useEffect(() => {
-    const sections = ["projects", "about"];
+useEffect(() => {
+  const handleScroll = () => {
+    const projectsSection = document.getElementById("projects");
+    const aboutSection = document.getElementById("about");
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    if (!projectsSection || !aboutSection) return;
 
-        if (visible[0]) {
-          setActiveTab(visible[0].target.id as "projects" | "about");
-        }
-      },
-      {
-        rootMargin: "-25% 0px -55% 0px",
-        threshold: [0.1, 0.25, 0.5],
-      }
-    );
+    const scrollPosition = window.scrollY + 150;
 
-    sections.forEach((id) => {
-      const element = document.getElementById(id);
+    const projectsTop = projectsSection.offsetTop;
+    const aboutTop = aboutSection.offsetTop;
 
-      if (element) {
-        observer.observe(element);
-      }
-    });
+    if (scrollPosition >= aboutTop) {
+      setActiveTab("about");
+    } else {
+      setActiveTab("projects");
+    }
+  };
 
-    return () => observer.disconnect();
-  }, []);
+  window.addEventListener("scroll", handleScroll);
+
+  handleScroll();
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []); 
 
   const scrollToSection = (id: "projects" | "about") => {
     document.getElementById(id)?.scrollIntoView({
@@ -241,7 +240,7 @@ export default function Home() {
 
             <div className="hero-person">
               <Image
-                src="/portrait.png"
+                src="/portrait.webp"
                 alt="Ayan"
                 width={500}
                 height={500}
@@ -338,7 +337,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* ================= ABOUT ================= */}
 
       <section id="about" className="content-section about-section">
@@ -400,6 +398,10 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---- AI SECTION  */}
+
+      <AISection />
+
       {/* ================= CONTACT ================= */}
 
       <section id="contact" className="contact-section">
@@ -423,8 +425,8 @@ export default function Home() {
       {/* ================= FOOTER ================= */}
 
       <footer className="footer">
-        <span>© 2026 Ayan Jamali</span>
-        <span>AI × Frontend</span>
+        <span>© 2026 Ayan J. All rights reserved | Your friendly neighborhood developer. :)</span>
+        {/* <span>AI × Frontend</span> */}
       </footer>
     </main>
   );
