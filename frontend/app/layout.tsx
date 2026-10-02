@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "Ayan.J — AI Frontend Developer",
+  title: "Ayan J. — AI Frontend Developer",
   description:
     "Portfolio of Ayan Jamali — AI engineering and frontend development.",
 };
