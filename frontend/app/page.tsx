@@ -425,7 +425,7 @@ useEffect(() => {
       {/* ================= FOOTER ================= */}
 
       <footer className="footer">
-        <span>© 2026 Ayan J. All rights reserved | Your friendly neighborhood developer. :)</span>
+        <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
         {/* <span>AI × Frontend</span> */}
       </footer>
     </main>
