@@ -79,8 +79,11 @@ def chat(request: ChatRequest):
 
         return ChatResponse(response=response_text, thread_id=request.thread_id)
     except Exception as e:
-        print(f"Agent Error: {e}")
-        raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
+        print(f"Agent Error: {type(e).__name__}: {e}")
+    raise HTTPException(
+        status_code=500,
+        detail="The AI assistant is temporarily unavailable."
+    )
 
 @app.post("/meeting", response_model=MeetingResponse)
 def meeting(request: MeetingRequest):
@@ -122,4 +125,4 @@ def meeting(request: MeetingRequest):
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    uvicorn.run("main:app", host="0.0.0.0", port=port)  

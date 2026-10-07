@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function AISection() {
     const [message, setMessage] = useState("");
+    const [threadId] = useState(() => crypto.randomUUID());
     const [messages, setMessages] = useState<{role: "user" | "assistant"; content: string}[]>([
         {
             role: "assistant",
@@ -41,9 +42,9 @@ async function handleSubmit(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: trimmedMessage,
-        thread_id: "portfolio-main",
-      }),
+      message: trimmedMessage,
+      thread_id: threadId,
+}),
     });
 
     if (!response.ok) {
