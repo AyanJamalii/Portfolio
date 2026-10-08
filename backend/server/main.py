@@ -12,12 +12,15 @@ from langchain_core.messages import HumanMessage
 from agents.graph import ayan_agent
 
 load_dotenv()
-
+# this is backend Code.
 app = FastAPI(
     title="Ayan AI portfolio API",
     description="Backend API for Ayan's AI portfolio Assistant.",
     version="1.0.0"
 )
+
+
+# Adding origins..
 
 origins = [
     "http://localhost:3000",
