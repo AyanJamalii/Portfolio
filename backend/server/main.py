@@ -12,15 +12,12 @@ from langchain_core.messages import HumanMessage
 from agents.graph import ayan_agent
 
 load_dotenv()
-# this is backend Code.
+
 app = FastAPI(
-    title="Ayan AI portfolio API",
-    description="Backend API for Ayan's AI portfolio Assistant.",
-    version="1.0.0"
+    title="Ayan AI Portfolio API",
+    description="Backend API for Ayan's AI portfolio assistant.",
+    version="1.0.0",
 )
-
-
-# Adding origins..
 
 origins = [
     "http://localhost:3000",
@@ -36,57 +33,77 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class ChatRequest(BaseModel):
-    message: str = Field(..., min_length=1, description="User's message.")
-    thread_id: str = Field(..., min_length=1, description="Unique conversation/thread ID")
+    message: str = Field(..., min_length=1)
+    thread_id: str = Field(..., min_length=1)
+
 
 class ChatResponse(BaseModel):
     response: str
     thread_id: str
 
+
 class MeetingRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    email: str = Field(..., min_length=1, max_length=200)
+    email: str = Field(..., min_length=3, max_length=200)
     message: str = Field(..., min_length=1, max_length=2000)
+
 
 class MeetingResponse(BaseModel):
     message: str
 
 
-@app.get('/')
+@app.get("/")
 def root():
-    return {"status": "online", "message": "Ayan AI Portfolio API is running."}
+    return {
+        "status": "online",
+        "message": "Ayan AI Portfolio API is running.",
+    }
+
 
 @app.get("/health")
-def health_chat():
+def health_check():
     return {"status": "healthy"}
+
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     try:
-        config = {"configurable": {"thread_id": request.thread_id}}
+        config = {
+            "configurable": {
+                "thread_id": request.thread_id,
+            }
+        }
 
         result = ayan_agent.invoke(
             {"messages": [HumanMessage(content=request.message)]},
-            config=config
+            config=config,
         )
 
-        response_message = result["messages"][-1]
-        content = response_message.content
+        content = result["messages"][-1].content
 
         if isinstance(content, list):
-            text_parts = [block.get("text", "") for block in content if isinstance(block, dict) and block.get("type") == "text"]
-            response_text = "".join(text_parts).strip()
+            response_text = "".join(
+                block.get("text", "")
+                for block in content
+                if isinstance(block, dict) and block.get("type") == "text"
+            ).strip()
         else:
             response_text = str(content)
 
-        return ChatResponse(response=response_text, thread_id=request.thread_id)
+        return ChatResponse(
+            response=response_text,
+            thread_id=request.thread_id,
+        )
+
     except Exception as e:
         print(f"Agent Error: {type(e).__name__}: {e}")
-    raise HTTPException(
-        status_code=500,
-        detail="The AI assistant is temporarily unavailable."
-    )
+        raise HTTPException(
+            status_code=500,
+            detail="The AI assistant is temporarily unavailable.",
+        ) from e
+
 
 @app.post("/meeting", response_model=MeetingResponse)
 def meeting(request: MeetingRequest):
@@ -97,35 +114,53 @@ def meeting(request: MeetingRequest):
         smtp_password = os.getenv("SMTP_PASSWORD")
         recipient_email = os.getenv("MEETING_RECIPIENT_EMAIL")
 
-        if not all([smtp_host, smtp_username, smtp_password, recipient_email]): 
-            raise HTTPException(status_code=500, detail="Email service is not configured properly.")
+        if not all([
+            smtp_host,
+            smtp_username,
+            smtp_password,
+            recipient_email,
+        ]):
+            raise HTTPException(
+                status_code=500,
+                detail="Email service is not configured properly.",
+            )
 
         email_message = EmailMessage()
-        email_message["Subject"] = f"New Portfolio Meeting Request from {request.name}"
+        email_message["Subject"] = (
+            f"New Portfolio Meeting Request from {request.name}"
+        )
         email_message["From"] = smtp_username
         email_message["To"] = recipient_email
         email_message["Reply-To"] = request.email
-        
+
         email_message.set_content(
-            f"New meeting request from your portfolio:\n\n"
+            "New meeting request from your portfolio:\n\n"
             f"Name: {request.name}\n"
             f"Email: {request.email}\n"
             f"Message: {request.message}\n\n"
-            f"You can directly reply to this email to get in touch."
+            "You can reply directly to this email."
         )
 
-        with smtplib.SMTP(smtp_host, smtp_port) as smtp:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as smtp:
             smtp.starttls()
             smtp.login(smtp_username, smtp_password)
             smtp.send_message(email_message)
 
-        return MeetingResponse(message="Meeting request sent successfully.")
+        return MeetingResponse(
+            message="Meeting request sent successfully."
+        )
+
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Email Error: {e}")
-        raise HTTPException(status_code=500, detail="Unable to send meeting request.")
+        print(f"Email Error: {type(e).__name__}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to send meeting request.",
+        ) from e
+
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)  
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+

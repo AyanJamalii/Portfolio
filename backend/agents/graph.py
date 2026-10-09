@@ -8,7 +8,7 @@ from langchain_core.messages import (
     HumanMessage,
     SystemMessage,
 )
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import START, END, StateGraph
 from langgraph.graph.message import add_messages
@@ -90,9 +90,11 @@ IMPORTANT RUlLES:
 class AgentState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
 
-model = ChatGoogleGenerativeAI(
-    model="gemini-3.5-flash",
-    temperature=0.3
+
+
+model = ChatGroq(
+    model="openai/gpt-oss-120b",
+    temperature=0.3,
 )
 
 def call_model(state: AgentState):
