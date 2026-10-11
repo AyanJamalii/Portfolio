@@ -10,9 +10,6 @@ export const metadata: Metadata = {
   title: "Ayan J. — AI Frontend Developer",
   description:
     "Portfolio of Ayan Jamali — AI engineering and frontend development.",
-  icons: {
-    icon: "/favicon.png",
-  },
 };
 export default function RootLayout({
   children,
