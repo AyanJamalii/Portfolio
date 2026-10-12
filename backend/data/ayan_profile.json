@@ -52,6 +52,39 @@
         "Next.js",
         "Gemini API"
       ]
+    },
+    {
+      "title": "MediCare Clinic & Voice Appointment Agent",
+      "description": "A specialized healthcare clinic website featuring an interactive chat and voice agent capable of answering doctor inquiries and seamlessly scheduling appointments.",
+      "tech": [
+        "React",
+        "FastAPI",
+        "LangChain",
+        "Web Speech API",
+        "Gemini API"
+      ]
+    },
+    {
+      "title": "Legal & HR Document Q&A RAG Agent",
+      "description": "A corporate dashboard allowing users to upload business contracts and HR policies, utilizing a vector database and RAG architecture to extract precise answers and summaries.",
+      "tech": [
+        "Next.js",
+        "FastAPI",
+        "LangChain RAG",
+        "ChromaDB",
+        "Gemini Embeddings"
+      ]
+    },
+    {
+      "title": "Real Estate Lead Qualification & Tour Bot",
+      "description": "A property listing web application equipped with a multi-step LangGraph conversational agent that qualifies buyers, shares property specs, and coordinates property tours.",
+      "tech": [
+        "React",
+        "Tailwind CSS",
+        "LangGraph",
+        "FastAPI",
+        "OpenAI/Gemini API"
+      ]
     }
   ]
 }
