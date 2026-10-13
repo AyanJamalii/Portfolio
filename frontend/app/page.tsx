@@ -48,57 +48,46 @@ const heroPoints = [
 
 const projects = [
   {
-    title: "Nexus AI — Agentic Workflow Automation Platform",
+    title: "Ayan Portfolio & Personal AI Agent",
+    date: "September 2026 – Present",
+    stack: ["Python", "LangGraph", "FastAPI", "React", "Next.js", "Gemini API"],
+    description:
+      "An interactive portfolio powered by a custom LangGraph backend agent that answers questions about Muhammad Ayan's professional background, skills, and projects.",
+    highlight:
+      "Integrated custom conversational AI agent with real-time streaming and robust frontend-backend integration.",
+    github: "",
+    live: "https://meetayan.vercel.app",
+  },
+  {
+    title: "MediCare Clinic & Voice Appointment Agent",
     date: "August 2026 – September 2026",
-    stack: ["Next.js", "LangGraph", "Python", "FastAPI", "Tailwind CSS"],
+    stack: ["React", "FastAPI", "LangChain", "Web Speech API", "Gemini API"],
     description:
-      "A visual node-based workflow builder designed for developers to orchestrate multi-agent AI systems without dealing with complex async boilerplate code. It features a drag-and-drop canvas UI that dynamically builds graph structures and streams real-time execution outputs directly from a Python execution backend.",
+      "A specialized healthcare clinic website featuring an interactive chat and voice agent capable of answering doctor inquiries and seamlessly scheduling appointments.",
     highlight:
-      "Reduced AI workflow setup time by 80% with visual state-machine debugging and sub-second node execution.",
+      "Integrated dual-channel voice and chat AI pipeline for frictionless patient appointment booking.",
     github: "",
     live: "",
   },
   {
-    title: "OmniDocs — Enterprise RAG & Document Intelligence Platform",
+    title: "Legal & HR Document Q&A RAG Agent",
     date: "July 2026 – August 2026",
-    stack: ["Next.js", "LangChain", "Python", "Qdrant", "Tailwind CSS"],
+    stack: ["Next.js", "FastAPI", "LangChain RAG", "ChromaDB", "Gemini Embeddings"],
     description:
-      "An enterprise-grade document search and chat platform designed to transform massive unstructured PDFs and technical documentation into interactive AI search interfaces. It utilizes semantic text chunking, hybrid vector embeddings, and strict document grounding to eliminate hallucinations.",
+      "A corporate dashboard allowing users to upload business contracts and HR policies, utilizing a vector database and RAG architecture to extract precise answers and summaries.",
     highlight:
-      "Sub-second contextual indexing with context-aware semantic retrieval.",
+      "Sub-second contextual indexing and strict document grounding to eliminate AI hallucinations.",
     github: "",
     live: "",
   },
   {
-    title: "DevPulse — Developer Productivity & GitHub Velocity Dashboard",
+    title: "Real Estate Lead Qualification & Tour Bot",
     date: "June 2026 – July 2026",
-    stack: ["Next.js", "React", "Tailwind CSS", "GitHub REST API", "Chart.js"],
+    stack: ["React", "Tailwind CSS", "LangGraph", "FastAPI", "OpenAI/Gemini API"],
     description:
-      "A sleek dark-mode analytics platform that tracks developer commit history, pull request velocity, and repository activity metrics in real time. Built with asynchronous API fetching, custom chart components, and aggressive local caching to bypass API rate limits smoothly.",
+      "A property listing web application equipped with a multi-step LangGraph conversational agent that qualifies buyers, shares property specs, and coordinates property tours.",
     highlight:
-      "Rendered complex commit heatmaps and activity graphs with zero UI lag using optimized client-side state.",
-    github: "",
-    live: "",
-  },
-  {
-    title: "VaporType — Minimalist Speed Typing & Performance Tracker",
-    date: "May 2026 – June 2026",
-    stack: ["JavaScript", "HTML5", "CSS3", "Tailwind CSS"],
-    description:
-      "A high-performance, distraction-free typing test web app featuring dark glassmorphic themes, instant WPM analytics, and error breakdown. Built using a zero-dependency, lightweight event listener engine in native JavaScript for millisecond-accurate keystroke tracking.",
-    highlight:
-      "Zero-dependency state engine providing real-time keystroke tracking and accuracy reporting.",
-    github: "",
-    live: "",
-  },
-  {
-    title: "Aether UI — Dark Mode Glassmorphic Component Library",
-    date: "April 2026 – May 2026",
-    stack: ["React", "Tailwind CSS", "Figma", "JavaScript"],
-    description:
-      "An open-source collection of reusable, highly accessible dark-mode UI components designed for modern web applications. Features modular copy-paste React/Tailwind elements engineered with built-in accessibility defaults, fluid glassmorphic borders, and ambient neon glows.",
-    highlight:
-      "Engineered fluid glassmorphism borders, glowing cards, and sleek input fields.",
+      "Automated multi-step buyer qualification and interactive tour scheduling workflows.",
     github: "",
     live: "",
   },
