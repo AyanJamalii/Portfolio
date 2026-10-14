@@ -172,7 +172,7 @@ useEffect(() => {
         </button>
       </header>
 
-      {/* ================= HERO ================= */}
+      {/* hero */}
 
       <section id="top" className="hero">
         <div className="hero-glow" />
@@ -190,7 +190,6 @@ useEffect(() => {
           </h1>
 
           <div className="hero-grid">
-            {/* LEFT HERO FEATURES */}
 
             <div className="hero-feature-wrapper">
               <div className="hero-feature-rail">
@@ -225,8 +224,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* CENTER PORTRAIT */}
-
             <div className="hero-person">
               <Image
                 src="/portrait.webp"
@@ -235,7 +232,6 @@ useEffect(() => {
                 height={500}
                 className="portrait"               />
             </div>
-            {/* RIGHT HERO COPY */}
 
             <div className="hero-side-copy hero-side-copy-right">
               <p>
@@ -260,7 +256,7 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ================= STICKY SECTION TABS ================= */}
+      {/* nav */}
 
       <nav className="section-tabs">
         <button
@@ -278,11 +274,10 @@ useEffect(() => {
         </button>
       </nav>
 
-      {/* ================= PROJECTS ================= */}
+      {/* projects */}
 
       <section id="projects" className="content-section projects-section">
         <div className="section-heading">
-          {/* <span>/Selected Work</span> */}
           <h2>Projects</h2>
         </div>
 
@@ -318,7 +313,22 @@ useEffect(() => {
                 </div>
 
                 <div className="project-actions">
-                  <a href={project.live}>Visit Site ↗</a>
+                  {index === 0 ? (
+                    <a
+                      href="#ai"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("ai")?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }}
+                    >
+                      Talk ↗
+                    </a>
+                  ) : (
+                    <a href={project.live}>Visit Site ↗</a>
+                  )}
                   <a href={project.github}>◉ View on Github</a>
                 </div>
               </div>
@@ -326,7 +336,8 @@ useEffect(() => {
           ))}
         </div>
       </section>
-      {/* ================= ABOUT ================= */}
+
+      {/* about */}
 
       <section id="about" className="content-section about-section">
         <div className="section-heading">
@@ -387,11 +398,11 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ---- AI SECTION  */}
+      {/* ai */}
 
       <AISection />
 
-      {/* ================= CONTACT ================= */}
+      {/* contact */}
 
       <section id="contact" className="contact-section">
         <div className="contact-glow" />
@@ -411,11 +422,10 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
+      {/* footer */}
 
       <footer className="footer">
         <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
-        {/* <span>AI × Frontend</span> */}
       </footer>
     </main>
   );
