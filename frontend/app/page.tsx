@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Mail, } from "lucide-react";
 import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
+import ConnectSection from "@/components/ConnectSection";
 
 const skills = [
   "HTML",
@@ -402,9 +403,13 @@ useEffect(() => {
 
       <AISection />
 
+      {/* connect */}
+
+      <ConnectSection />
+
       {/* contact */}
 
-      <section id="contact" className="contact-section">
+      {/* <section id="contact" className="contact-section">
         <div className="contact-glow" />
 
         <div className="contact-content">
@@ -420,12 +425,12 @@ useEffect(() => {
             Start a conversation ↗
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* footer */}
 
       <footer className="footer">
-        <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
+        <span>© 2026 Ayan J. All rights reserved |  Your friendly neighborhood developer. :)</span>
       </footer>
     </main>
   );

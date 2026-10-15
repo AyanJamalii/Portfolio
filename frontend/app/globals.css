@@ -842,6 +842,115 @@ a {
   color: rgba(237, 237, 237, 0.25);
 }
 
+     /* CONNECT SECTION */
+
+.connect-section {
+  padding: 60px 20px;
+}
+
+.connect-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.connect-left {
+  flex: 1 1 450px;
+}
+
+.connect-kicker {
+  font-size: 14px;
+  color: #888;
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-archivo), sans-serif;
+}
+
+.connect-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 16px;
+  font-family: var(--font-clash), sans-serif;
+}
+
+.connect-desc {
+  color: #aaa;
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 24px;
+  font-family: var(--font-archivo), sans-serif;
+}
+
+.connect-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #fff;
+  color: #000;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: var(--font-archivo), sans-serif;
+  transition: opacity 0.2s ease;
+}
+
+.connect-action-btn:hover {
+  opacity: 0.9;
+}
+
+.connect-grid {
+  flex: 1 1 400px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.connect-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #121214;
+  border: 1px solid #27272a;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+.connect-card:hover {
+  border-color: #52525b;
+}
+
+.connect-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.connect-logo-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.connect-card-title {
+  display: block;
+  font-size: 15px;
+  font-family: var(--font-archivo), sans-serif;
+}
+
+
+
 /* AI chat: keyframes */
 @keyframes aiIn {
   from {
@@ -946,7 +1055,7 @@ a {
   display: flex;
   justify-content: center;
   border-top: 1px solid var(--border);
-  color: rgba(237, 237, 237, 0.4);
+  color: #ededed;
   font-size: 16px;
   text-align: center;
 }
