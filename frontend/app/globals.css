@@ -1059,6 +1059,13 @@ a {
   font-size: 16px;
   text-align: center;
 }
+@media (max-width: 768px) {
+  .connect-action-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
 
 /* Tablet */
 @media (max-width: 900px) {
