@@ -3,7 +3,7 @@ import Image from "next/image";
 const socialLinks = [
   {
     name: "Github",
-    url: "https://github.com/ayanjamali",
+    url: "https://github.com/AyanJamalii",
     icon: "/github.webp",
   },
   {
@@ -13,7 +13,7 @@ const socialLinks = [
   },
   {
     name: "LinkedIn",
-    url: "https://linkedin.com/in/ayanjamali",
+    url: "https://www.linkedin.com/in/muhammad-ayan-696272316/",
     icon: "/Linkedin.webp",
   },
   {
