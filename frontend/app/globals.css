@@ -845,67 +845,72 @@ a {
      /* CONNECT SECTION */
 
 .connect-section {
-  padding: 60px 20px;
+  padding: 80px 20px;
 }
 
 .connect-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
+  gap: 48px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .connect-left {
-  flex: 1 1 450px;
+  flex: 1 1 480px;
 }
 
 .connect-kicker {
   font-size: 14px;
-  color: #888;
+  color: #a1a1aa;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-family: var(--font-archivo), sans-serif;
+  letter-spacing: 0.02em;
 }
 
 .connect-title {
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 42px;
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   font-family: var(--font-clash), sans-serif;
+  line-height: 1.15;
 }
 
 .connect-desc {
-  color: #aaa;
-  line-height: 1.6;
-  font-size: 15px;
-  margin-bottom: 24px;
+  color: #a1a1aa;
+  line-height: 1.65;
+  font-size: 16px;
+  margin-bottom: 32px;
   font-family: var(--font-archivo), sans-serif;
 }
 
 .connect-action-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: #fff;
-  color: #000;
-  border-radius: 8px;
+  padding: 14px 28px;
+  background: #ffffff;
+  color: #000000;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 15px;
   font-family: var(--font-archivo), sans-serif;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .connect-action-btn:hover {
-  opacity: 0.9;
+  background: #e4e4e7;
+  transform: translateY(-1px);
 }
 
 .connect-grid {
-  flex: 1 1 400px;
+  flex: 1 1 480px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
@@ -914,23 +919,25 @@ a {
 .connect-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #121214;
+  gap: 16px;
+  background: #09090b;
   border: 1px solid #27272a;
-  padding: 16px 20px;
-  border-radius: 12px;
+  padding: 22px 24px;
+  border-radius: 14px;
   color: #fff;
   text-decoration: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .connect-card:hover {
   border-color: #52525b;
+  background: #121215;
+  transform: translateY(-2px);
 }
 
 .connect-icon-wrapper {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -938,18 +945,37 @@ a {
 }
 
 .connect-logo-img {
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 .connect-card-title {
   display: block;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
   font-family: var(--font-archivo), sans-serif;
+  color: #f4f4f5;
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .connect-section {
+    padding: 60px 16px;
+  }
 
+  .connect-title {
+    font-size: 32px;
+  }
+
+  .connect-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .connect-action-btn {
+    width: 100%;
+  }
+}
 
 /* AI chat: keyframes */
 @keyframes aiIn {
@@ -1058,13 +1084,6 @@ a {
   color: #ededed;
   font-size: 16px;
   text-align: center;
-}
-@media (max-width: 768px) {
-  .connect-action-btn {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
 }
 
 /* Tablet */

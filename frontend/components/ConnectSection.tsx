@@ -14,7 +14,7 @@ const socialLinks = [
   {
     name: "LinkedIn",
     url: "https://linkedin.com/in/ayanjamali",
-    icon: "/LinkedIn.webp",
+    icon: "/Linkedin.webp",
   },
   {
     name: "Discord",
@@ -55,8 +55,8 @@ export default function ConnectSection() {
                 <Image 
                   src={item.icon} 
                   alt={item.name} 
-                  width={24} 
-                  height={24} 
+                  width={500} 
+                  height={500} 
                   className="connect-logo-img"
                 />
               </div>

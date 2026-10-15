@@ -5,6 +5,20 @@
     "role": "Frontend Developer & AI Agent Explorer",
     "bio": "A frontend developer with a strong foundation in HTML, CSS, JavaScript, and React. Currently expanding into AI engineering with Python, LangChain, and LangGraph, with a focus on building AI agents and custom agentic workflows."
   },
+  "education": [
+    {
+      "degree": "Matriculation",
+      "completion_year": "2023"
+    },
+    {
+      "degree": "Intermediate",
+      "completion_year": "2025"
+    },
+    {
+      "degree": "Bachelor of Science in Computer Science (BSCS)",
+      "status": "Currently Pursuing"
+    }
+  ],
   "skills_and_stack": {
     "frontend": [
       "HTML5",
