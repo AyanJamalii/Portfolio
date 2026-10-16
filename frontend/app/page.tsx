@@ -407,26 +407,6 @@ useEffect(() => {
 
       <ConnectSection />
 
-      {/* contact */}
-
-      {/* <section id="contact" className="contact-section">
-        <div className="contact-glow" />
-
-        <div className="contact-content">
-          <span>Have an idea?</span>
-
-          <h2>
-            Let&apos;s build
-            <br />
-            something useful.
-          </h2>
-
-          <button className="contact-button">
-            Start a conversation ↗
-          </button>
-        </div>
-      </section> */}
-
       {/* footer */}
 
       <footer className="footer">
