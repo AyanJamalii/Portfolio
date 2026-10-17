@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from 'next/image';
-import { Mail } from "lucide-react";
+import Image from 'next/image'
+import { Mail, } from "lucide-react";
 import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
 import ConnectSection from "@/components/ConnectSection";
@@ -96,12 +96,16 @@ const projects = [
 ];
 
 export default function Home() {
-  useEffect(() => {
-    console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
-  }, []);
+    useEffect(() => {
+  console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
+}, []);
+  const [activeTab, setActiveTab] = useState<"projects" | "about">(
+    "projects"
+  );
 
-  const [activeTab, setActiveTab] = useState<"projects" | "about">("projects");
   const [activeHeroPoint, setActiveHeroPoint] = useState(0);
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -111,30 +115,36 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const projectsSection = document.getElementById("projects");
-      const aboutSection = document.getElementById("about");
+  /*
+   * PROJECT / ABOUT SCROLL SPY
+   */
+useEffect(() => {
+  const handleScroll = () => {
+    const projectsSection = document.getElementById("projects");
+    const aboutSection = document.getElementById("about");
 
-      if (!projectsSection || !aboutSection) return;
+    if (!projectsSection || !aboutSection) return;
 
-      const scrollPosition = window.scrollY + 150;
-      const aboutTop = aboutSection.offsetTop;
+    const scrollPosition = window.scrollY + 150;
 
-      if (scrollPosition >= aboutTop) {
-        setActiveTab("about");
-      } else {
-        setActiveTab("projects");
-      }
-    };
+    const projectsTop = projectsSection.offsetTop;
+    const aboutTop = aboutSection.offsetTop;
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
+    if (scrollPosition >= aboutTop) {
+      setActiveTab("about");
+    } else {
+      setActiveTab("projects");
+    }
+  };
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  window.addEventListener("scroll", handleScroll);
+
+  handleScroll();
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []); 
 
   const scrollToSection = (id: "projects" | "about") => {
     document.getElementById(id)?.scrollIntoView({
@@ -145,6 +155,7 @@ export default function Home() {
 
   return (
     <main className="site-shell">
+
       <header className="navbar">
         <a href="#top" className="logo">
           Ayan    J.
@@ -158,97 +169,97 @@ export default function Home() {
             })
           }
         >
-          Let&apos;s Talk
-          <Mail size={16} strokeWidth={1.8} />
+            Let&apos;s Talk
+            <Mail size={16} strokeWidth={1.8} />
         </button>
       </header>
 
       {/* hero */}
+
       <section id="top" className="hero">
         <div className="hero-glow" />
 
-        <FadeIn direction="up">
-          <div className="hero-content">
-            <div className="hero-badges">
-              <span>⌘ Code + Prompt</span>
-              <span>☕ Powered by Coffee</span>
-            </div>
+        <div className="hero-content">
+          <div className="hero-badges">
+            <span>⌘ Code + Prompt</span>
+            <span>☕ Powered by Coffee</span>
+          </div>
 
-            <h1>
-              Hi I&apos;m Ayan
-              <br />
-              <span>AI Frontend Developer.</span>
-            </h1>
+          <h1>
+            Hi I&apos;m Ayan
+            <br />
+            <span>AI Frontend Developer.</span>
+          </h1>
 
-            <div className="hero-grid">
-              <div className="hero-feature-wrapper">
-                <div className="hero-feature-rail">
-                  <div
-                    className="hero-feature-active"
-                    style={{
-                      transform: `translateY(${activeHeroPoint * 100}%)`,
-                    }}
-                  />
-                </div>
+          <div className="hero-grid">
 
-                <div className="hero-features">
-                  {heroPoints.map((point, index) => {
-                    const isActive = index === activeHeroPoint;
-
-                    return (
-                      <button
-                        key={point.number}
-                        className={`hero-feature ${
-                          isActive ? "hero-feature-active-text" : ""
-                        }`}
-                        onClick={() => setActiveHeroPoint(index)}
-                      >
-                        <span className="hero-feature-number">
-                          {point.number} / {point.title}
-                        </span>
-
-                        <p>{point.description}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="hero-person">
-                <Image
-                  src="/portrait.webp"
-                  alt="Ayan"
-                  width={500}
-                  height={500}
-                  className="portrait"
+            <div className="hero-feature-wrapper">
+              <div className="hero-feature-rail">
+                <div
+                  className="hero-feature-active"
+                  style={{
+                    transform: `translateY(${activeHeroPoint * 100}%)`,
+                  }}
                 />
               </div>
 
-              <div className="hero-side-copy hero-side-copy-right">
-                <p>
-                  Crafting responsive, high-performance React & Next.js
-                  interfaces powered by intelligent AI agent backends. I care
-                  about clean systems, useful interactions and turning ideas
-                  into polished experiences.
-                </p>
+              <div className="hero-features">
+                {heroPoints.map((point, index) => {
+                  const isActive = index === activeHeroPoint;
 
-                <button
-                  className="hero-button"
-                  onClick={() =>
-                    document.getElementById("contact")?.scrollIntoView({
-                      behavior: "smooth",
-                    })
-                  }
-                >
-                  Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
-                </button>
+                  return (
+                    <button
+                      key={point.number}
+                      className={`hero-feature ${
+                        isActive ? "hero-feature-active-text" : ""
+                      }`}
+                      onClick={() => setActiveHeroPoint(index)}
+                    >
+                      <span className="hero-feature-number">
+                        {point.number} / {point.title}
+                      </span>
+
+                      <p>{point.description}</p>
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
+            <div className="hero-person">
+              <Image
+                src="/portrait.webp"
+                alt="Ayan"
+                width={500}
+                height={500}
+                className="portrait"              />
+            </div>
+
+            <div className="hero-side-copy hero-side-copy-right">
+              <p>
+                Crafting responsive, high-performance React & Next.js
+                interfaces powered by intelligent AI agent backends. I care
+                about clean systems, useful interactions and turning ideas
+                into polished experiences.
+              </p>
+
+              <button
+                className="hero-button"
+                onClick={() =>
+                  document.getElementById("contact")?.scrollIntoView({
+                    behavior: "smooth",
+                  })
+                }
+              >
+                 Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
+              </button>
+            </div>
           </div>
-        </FadeIn>
+        </div>
       </section>
 
       {/* nav */}
+
       <nav className="section-tabs">
         <button
           className={activeTab === "projects" ? "active" : ""}
@@ -266,6 +277,7 @@ export default function Home() {
       </nav>
 
       {/* projects */}
+
       <section id="projects" className="content-section projects-section">
         <FadeIn direction="up">
           <div className="section-heading">
@@ -331,6 +343,7 @@ export default function Home() {
       </section>
 
       {/* about */}
+
       <section id="about" className="content-section about-section">
         <FadeIn direction="up">
           <div className="section-heading">
@@ -395,16 +408,19 @@ export default function Home() {
       </section>
 
       {/* ai */}
+
       <FadeIn direction="up">
         <AISection />
       </FadeIn>
 
       {/* connect */}
+
       <FadeIn direction="up">
         <ConnectSection />
       </FadeIn>
 
       {/* footer */}
+
       <footer className="footer">
         <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
       </footer>
