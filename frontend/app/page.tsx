@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from 'next/image'
-import { Mail, } from "lucide-react";
+import Image from 'next/image';
+import { Mail } from "lucide-react";
 import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
 import ConnectSection from "@/components/ConnectSection";
+import FadeIn from "@/components/FadeIn";
 
 const skills = [
   "HTML",
@@ -95,16 +96,12 @@ const projects = [
 ];
 
 export default function Home() {
-    useEffect(() => {
-  console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
-}, []);
-  const [activeTab, setActiveTab] = useState<"projects" | "about">(
-    "projects"
-  );
+  useEffect(() => {
+    console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
+  }, []);
 
+  const [activeTab, setActiveTab] = useState<"projects" | "about">("projects");
   const [activeHeroPoint, setActiveHeroPoint] = useState(0);
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -114,36 +111,30 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  /*
-   * PROJECT / ABOUT SCROLL SPY
-   */
-useEffect(() => {
-  const handleScroll = () => {
-    const projectsSection = document.getElementById("projects");
-    const aboutSection = document.getElementById("about");
+  useEffect(() => {
+    const handleScroll = () => {
+      const projectsSection = document.getElementById("projects");
+      const aboutSection = document.getElementById("about");
 
-    if (!projectsSection || !aboutSection) return;
+      if (!projectsSection || !aboutSection) return;
 
-    const scrollPosition = window.scrollY + 150;
+      const scrollPosition = window.scrollY + 150;
+      const aboutTop = aboutSection.offsetTop;
 
-    const projectsTop = projectsSection.offsetTop;
-    const aboutTop = aboutSection.offsetTop;
+      if (scrollPosition >= aboutTop) {
+        setActiveTab("about");
+      } else {
+        setActiveTab("projects");
+      }
+    };
 
-    if (scrollPosition >= aboutTop) {
-      setActiveTab("about");
-    } else {
-      setActiveTab("projects");
-    }
-  };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
 
-  window.addEventListener("scroll", handleScroll);
-
-  handleScroll();
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []); 
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const scrollToSection = (id: "projects" | "about") => {
     document.getElementById(id)?.scrollIntoView({
@@ -154,7 +145,6 @@ useEffect(() => {
 
   return (
     <main className="site-shell">
-
       <header className="navbar">
         <a href="#top" className="logo">
           Ayan    J.
@@ -168,97 +158,97 @@ useEffect(() => {
             })
           }
         >
-            Let&apos;s Talk
-            <Mail size={16} strokeWidth={1.8} />
+          Let&apos;s Talk
+          <Mail size={16} strokeWidth={1.8} />
         </button>
       </header>
 
       {/* hero */}
-
       <section id="top" className="hero">
         <div className="hero-glow" />
 
-        <div className="hero-content">
-          <div className="hero-badges">
-            <span>⌘ Code + Prompt</span>
-            <span>☕ Powered by Coffee</span>
-          </div>
+        <FadeIn direction="up">
+          <div className="hero-content">
+            <div className="hero-badges">
+              <span>⌘ Code + Prompt</span>
+              <span>☕ Powered by Coffee</span>
+            </div>
 
-          <h1>
-            Hi I&apos;m Ayan
-            <br />
-            <span>AI Frontend Developer.</span>
-          </h1>
+            <h1>
+              Hi I&apos;m Ayan
+              <br />
+              <span>AI Frontend Developer.</span>
+            </h1>
 
-          <div className="hero-grid">
+            <div className="hero-grid">
+              <div className="hero-feature-wrapper">
+                <div className="hero-feature-rail">
+                  <div
+                    className="hero-feature-active"
+                    style={{
+                      transform: `translateY(${activeHeroPoint * 100}%)`,
+                    }}
+                  />
+                </div>
 
-            <div className="hero-feature-wrapper">
-              <div className="hero-feature-rail">
-                <div
-                  className="hero-feature-active"
-                  style={{
-                    transform: `translateY(${activeHeroPoint * 100}%)`,
-                  }}
+                <div className="hero-features">
+                  {heroPoints.map((point, index) => {
+                    const isActive = index === activeHeroPoint;
+
+                    return (
+                      <button
+                        key={point.number}
+                        className={`hero-feature ${
+                          isActive ? "hero-feature-active-text" : ""
+                        }`}
+                        onClick={() => setActiveHeroPoint(index)}
+                      >
+                        <span className="hero-feature-number">
+                          {point.number} / {point.title}
+                        </span>
+
+                        <p>{point.description}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="hero-person">
+                <Image
+                  src="/portrait.webp"
+                  alt="Ayan"
+                  width={500}
+                  height={500}
+                  className="portrait"
                 />
               </div>
 
-              <div className="hero-features">
-                {heroPoints.map((point, index) => {
-                  const isActive = index === activeHeroPoint;
+              <div className="hero-side-copy hero-side-copy-right">
+                <p>
+                  Crafting responsive, high-performance React & Next.js
+                  interfaces powered by intelligent AI agent backends. I care
+                  about clean systems, useful interactions and turning ideas
+                  into polished experiences.
+                </p>
 
-                  return (
-                    <button
-                      key={point.number}
-                      className={`hero-feature ${
-                        isActive ? "hero-feature-active-text" : ""
-                      }`}
-                      onClick={() => setActiveHeroPoint(index)}
-                    >
-                      <span className="hero-feature-number">
-                        {point.number} / {point.title}
-                      </span>
-
-                      <p>{point.description}</p>
-                    </button>
-                  );
-                })}
+                <button
+                  className="hero-button"
+                  onClick={() =>
+                    document.getElementById("contact")?.scrollIntoView({
+                      behavior: "smooth",
+                    })
+                  }
+                >
+                  Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
+                </button>
               </div>
             </div>
-
-            <div className="hero-person">
-              <Image
-                src="/portrait.webp"
-                alt="Ayan"
-                width={500}
-                height={500}
-                className="portrait"               />
-            </div>
-
-            <div className="hero-side-copy hero-side-copy-right">
-              <p>
-                Crafting responsive, high-performance React & Next.js
-                interfaces powered by intelligent AI agent backends. I care
-                about clean systems, useful interactions and turning ideas
-                into polished experiences.
-              </p>
-
-              <button
-                className="hero-button"
-                onClick={() =>
-                  document.getElementById("contact")?.scrollIntoView({
-                    behavior: "smooth",
-                  })
-                }
-              >
-                 Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
-              </button>
-            </div>
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* nav */}
-
       <nav className="section-tabs">
         <button
           className={activeTab === "projects" ? "active" : ""}
@@ -276,141 +266,147 @@ useEffect(() => {
       </nav>
 
       {/* projects */}
-
       <section id="projects" className="content-section projects-section">
-        <div className="section-heading">
-          <h2>Projects</h2>
-        </div>
+        <FadeIn direction="up">
+          <div className="section-heading">
+            <h2>Projects</h2>
+          </div>
+        </FadeIn>
 
         <div className="projects-list">
           {projects.map((project, index) => (
-            <article
-              className={`project-card ${
-                index % 2 === 1 ? "project-card-reverse" : ""
-              }`}
-              key={project.title}
-            >
-              <div className="project-image">
-                <span>PROJECT 0{index + 1}</span>
-              </div>
-
-              <div className="project-info">
-                <h3>{project.title}</h3>
-
-                <p className="project-date">{project.date}</p>
-
-                <div className="tech-list">
-                  {project.stack.map((tech) => (
-                    <span key={tech}>{tech}</span>
-                  ))}
+            <FadeIn key={project.title} delay={index * 0.1} direction="up">
+              <article
+                className={`project-card ${
+                  index % 2 === 1 ? "project-card-reverse" : ""
+                }`}
+              >
+                <div className="project-image">
+                  <span>PROJECT 0{index + 1}</span>
                 </div>
 
-                <div className="project-copy">
-                  <strong>About Project:</strong>
-                  <p>{project.description}</p>
+                <div className="project-info">
+                  <h3>{project.title}</h3>
 
-                  <strong>Key Highlight:</strong>
-                  <p>{project.highlight}</p>
-                </div>
+                  <p className="project-date">{project.date}</p>
 
-                <div className="project-actions">
-                  {index === 0 ? (
-                    <a
-                      href="#ai"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        document.getElementById("ai")?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
-                      }}
-                    >
-                      Talk ↗
-                    </a>
-                  ) : (
-                    <a href={project.live}>Visit Site ↗</a>
-                  )}
-                  <a href={project.github}>◉ View on Github</a>
+                  <div className="tech-list">
+                    {project.stack.map((tech) => (
+                      <span key={tech}>{tech}</span>
+                    ))}
+                  </div>
+
+                  <div className="project-copy">
+                    <strong>About Project:</strong>
+                    <p>{project.description}</p>
+
+                    <strong>Key Highlight:</strong>
+                    <p>{project.highlight}</p>
+                  </div>
+
+                  <div className="project-actions">
+                    {index === 0 ? (
+                      <a
+                        href="#ai"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById("ai")?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+                        }}
+                      >
+                        Talk ↗
+                      </a>
+                    ) : (
+                      <a href={project.live}>Visit Site ↗</a>
+                    )}
+                    <a href={project.github}>◉ View on Github</a>
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </FadeIn>
           ))}
         </div>
       </section>
 
       {/* about */}
-
       <section id="about" className="content-section about-section">
-        <div className="section-heading">
-          <span>/ Get to know me</span>
-          <h2>About</h2>
-        </div>
-
-        <div className="about-grid">
-          <div>
-            <p className="about-large">
-              Hi, I&apos;m Ayan, a 19-year-old Computer Science student and aspiring AI Engineer. I build minimal frontend interfaces and orchestrate Gen AI &amp; Agentic AI workflows, exploring how intelligent code makes the web feel seamless.
-            </p>
+        <FadeIn direction="up">
+          <div className="section-heading">
+            <span>/ Get to know me</span>
+            <h2>About</h2>
           </div>
+        </FadeIn>
 
-          <div className="about-copy">
-  <p>
-    I started with frontend development and gradually moved deeper
-    into Python, AI engineering, LangChain, LangGraph and RAG
-    workflows.
-  </p>
+        <FadeIn direction="up">
+          <div className="about-grid">
+            <div>
+              <p className="about-large">
+                Hi, I&apos;m Ayan, a 19-year-old Computer Science student and aspiring AI Engineer. I build minimal frontend interfaces and orchestrate Gen AI &amp; Agentic AI workflows, exploring how intelligent code makes the web feel seamless.
+              </p>
+            </div>
 
-  <p>
-    My current focus is combining polished interfaces with useful
-    AI systems — creating products that feel simple on the surface
-    while having powerful systems underneath.
-  </p>
+            <div className="about-copy">
+              <p>
+                I started with frontend development and gradually moved deeper
+                into Python, AI engineering, LangChain, LangGraph and RAG
+                workflows.
+              </p>
 
-  <div className="about-skills">
-    <FolderFloat
-      className="about-folder"
-      items={skills}
-      label="My Skills"
-      sublabel={`${skills.length} skills`}
-      trigger="hover"
-      closeOnSelect
-      physics
-      drift={0.5}
-      folderColor="#3f3f46"
-      frontColor="#52525b"
-      paperColor="#f5f5f5"
-      itemColor="#f5f5f5"
-      itemTextColor="#18181b"
-      labelColor="#f5f5f5"
-      width={200}
-      height={148}
-      radius={14}
-      spread={180}
-      lift={26}
-      tilt={8}
-      flapAngle={34}
-      restAngle={16}
-      openDuration={520}
-      stagger={45}
-      bounce={0.3}
-    />
-  </div>
-</div>
-        </div>
+              <p>
+                My current focus is combining polished interfaces with useful
+                AI systems — creating products that feel simple on the surface
+                while having powerful systems underneath.
+              </p>
+
+              <div className="about-skills">
+                <FolderFloat
+                  className="about-folder"
+                  items={skills}
+                  label="My Skills"
+                  sublabel={`${skills.length} skills`}
+                  trigger="hover"
+                  closeOnSelect
+                  physics
+                  drift={0.5}
+                  folderColor="#3f3f46"
+                  frontColor="#52525b"
+                  paperColor="#f5f5f5"
+                  itemColor="#f5f5f5"
+                  itemTextColor="#18181b"
+                  labelColor="#f5f5f5"
+                  width={200}
+                  height={148}
+                  radius={14}
+                  spread={180}
+                  lift={26}
+                  tilt={8}
+                  flapAngle={34}
+                  restAngle={16}
+                  openDuration={520}
+                  stagger={45}
+                  bounce={0.3}
+                />
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </section>
 
       {/* ai */}
-
-      <AISection />
+      <FadeIn direction="up">
+        <AISection />
+      </FadeIn>
 
       {/* connect */}
-
-      <ConnectSection />
+      <FadeIn direction="up">
+        <ConnectSection />
+      </FadeIn>
 
       {/* footer */}
-
       <footer className="footer">
-        <span>© 2026 Ayan J. All rights reserved |  Your friendly neighborhood developer. :)</span>
+        <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
       </footer>
     </main>
   );
