@@ -7,6 +7,7 @@ import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
 import ConnectSection from "@/components/ConnectSection";
 import FadeIn from "@/components/FadeIn";
+import TextLoop from "@/components/TextLoop";
 
 const skills = [
   "HTML",
@@ -257,7 +258,34 @@ useEffect(() => {
           </div>
         </div>
       </section>
-
+<FadeIn direction="up">
+        <div style={{ marginBottom: "40px" }}>
+          <TextLoop
+            text="Frontend Developer ✦ AI Engineer ✦ React ✦ LangGraph ✦"
+  shape="wave"
+  speed={90}
+  direction="forward"
+  separator="✦"
+  curviness={30}
+  tilt={0}
+  fontSize={26}
+  fontWeight={800}
+  letterSpacing={2}
+  uppercase
+  ribbon
+  ribbonColor="#01040b"
+  ribbonWidth={50}
+  edgeFade={0}
+  cross={false}
+  crossAngle={16}
+  draggable={false}
+  scrollBoost={0}
+  outline={false}
+  pauseOnHover
+  outlineWidth={1.5}
+          />
+        </div>
+      </FadeIn>
       {/* nav */}
 
       <nav className="section-tabs">
