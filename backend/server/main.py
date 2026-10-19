@@ -241,6 +241,8 @@ def oauth_start():
     return RedirectResponse(url)
 
 
+oauth_store = {}
+
 @app.get("/oauth/start")
 def oauth_start():
     if not os.getenv("GOOGLE_CLIENT_ID") or not os.getenv("GOOGLE_CLIENT_SECRET"):
@@ -252,8 +254,10 @@ def oauth_start():
         prompt="consent",
         include_granted_scopes="true",
     )
-    # Note: Production mein state ko securely store karna parta hai, 
-    # lekin filhal testing ke liye aap redirect response bhej sakte hain.
+    
+    # State ke khilaf code_verifier save kar lein
+    oauth_store[state] = flow.code_verifier
+    
     return RedirectResponse(url)
 
 
@@ -262,8 +266,13 @@ def oauth_callback(
     code: str = Query(...),
     state: str = Query(...),
 ):
-    # Yahan state ke sath flow ko dobara banayein
+    # Saved code_verifier ko wapas nikalhein
+    stored_verifier = oauth_store.get(state)
+    
     flow = create_google_flow(state=state)
+    if stored_verifier:
+        flow.code_verifier = stored_verifier
+
     try:
         flow.fetch_token(code=code)
         credentials = flow.credentials
@@ -273,6 +282,9 @@ def oauth_callback(
             credentials.to_json(),
             encoding="utf-8",
         )
+        
+        # Use ho chuka state store se hata dein
+        oauth_store.pop(state, None)
 
         return {
             "status": "connected",
