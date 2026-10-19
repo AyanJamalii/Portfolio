@@ -223,24 +223,6 @@ def get_calendar_service():
     return build("calendar", "v3", credentials=credentials)
 
 
-@app.get("/oauth/start")
-def oauth_start():
-    if not os.getenv("GOOGLE_CLIENT_ID") or not os.getenv(
-        "GOOGLE_CLIENT_SECRET"
-    ):
-        raise HTTPException(500, "Google OAuth is not configured.")
-
-    flow = create_google_flow()
-    
-    # Yahan se redirect_uri=flow.redirect_uri hata dein kyun ke flow isay khud handle karta hai
-    url, _ = flow.authorization_url(
-        access_type="offline",
-        prompt="consent",
-        include_granted_scopes="true",
-    )
-    return RedirectResponse(url)
-
-
 oauth_store = {}
 
 @app.get("/oauth/start")
@@ -255,9 +237,7 @@ def oauth_start():
         include_granted_scopes="true",
     )
     
-    # State ke khilaf code_verifier save kar lein
     oauth_store[state] = flow.code_verifier
-    
     return RedirectResponse(url)
 
 
@@ -266,7 +246,6 @@ def oauth_callback(
     code: str = Query(...),
     state: str = Query(...),
 ):
-    # Saved code_verifier ko wapas nikalhein
     stored_verifier = oauth_store.get(state)
     
     flow = create_google_flow(state=state)
@@ -283,7 +262,6 @@ def oauth_callback(
             encoding="utf-8",
         )
         
-        # Use ho chuka state store se hata dein
         oauth_store.pop(state, None)
 
         return {
