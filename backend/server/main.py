@@ -241,11 +241,28 @@ def oauth_start():
     return RedirectResponse(url)
 
 
+@app.get("/oauth/start")
+def oauth_start():
+    if not os.getenv("GOOGLE_CLIENT_ID") or not os.getenv("GOOGLE_CLIENT_SECRET"):
+        raise HTTPException(500, "Google OAuth is not configured.")
+
+    flow = create_google_flow()
+    url, state = flow.authorization_url(
+        access_type="offline",
+        prompt="consent",
+        include_granted_scopes="true",
+    )
+    # Note: Production mein state ko securely store karna parta hai, 
+    # lekin filhal testing ke liye aap redirect response bhej sakte hain.
+    return RedirectResponse(url)
+
+
 @app.get("/oauth/callback")
 def oauth_callback(
     code: str = Query(...),
     state: str = Query(...),
 ):
+    # Yahan state ke sath flow ko dobara banayein
     flow = create_google_flow(state=state)
     try:
         flow.fetch_token(code=code)
@@ -259,13 +276,13 @@ def oauth_callback(
 
         return {
             "status": "connected",
-            "message": "Google Calendar authorization saved.",
+            "message": "Google Calendar authorization saved successfully!",
         }
     except Exception as e:
         print(f"Google OAuth Error: {type(e).__name__}: {e}")
         raise HTTPException(
             status_code=400,
-            detail="Google authorization failed.",
+            detail=f"Google authorization failed: {str(e)}",
         ) from e
 
 
