@@ -120,7 +120,7 @@ def chat(request: ChatRequest):
 def meeting(request: MeetingRequest):
     try:
         smtp_host = os.getenv("SMTP_HOST")
-        smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        smtp_port = int(os.getenv("SMTP_PORT", "465"))
         smtp_username = os.getenv("SMTP_USERNAME")
         smtp_password = os.getenv("SMTP_PASSWORD")
         recipient_email = os.getenv("MEETING_RECIPIENT_EMAIL")
@@ -152,8 +152,7 @@ def meeting(request: MeetingRequest):
             "You can reply directly to this email."
         )
 
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as smtp:
-            smtp.starttls()
+        with smtplib.SMTP_SSL(smtp_host, 465, timeout=20) as smtp:
             smtp.login(smtp_username, smtp_password)
             smtp.send_message(email_message)
 
