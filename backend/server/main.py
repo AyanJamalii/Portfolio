@@ -232,12 +232,11 @@ def oauth_start():
 
     flow = create_google_flow()
     
-    # Yahan redirect_uri ko explicitly authorization_url mein pass karein
+    # Yahan se redirect_uri=flow.redirect_uri hata dein kyun ke flow isay khud handle karta hai
     url, _ = flow.authorization_url(
         access_type="offline",
         prompt="consent",
         include_granted_scopes="true",
-        redirect_uri=flow.redirect_uri, 
     )
     return RedirectResponse(url)
 
