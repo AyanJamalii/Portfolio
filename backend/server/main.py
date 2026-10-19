@@ -231,10 +231,13 @@ def oauth_start():
         raise HTTPException(500, "Google OAuth is not configured.")
 
     flow = create_google_flow()
+    
+    # Yahan redirect_uri ko explicitly authorization_url mein pass karein
     url, _ = flow.authorization_url(
         access_type="offline",
         prompt="consent",
         include_granted_scopes="true",
+        redirect_uri=flow.redirect_uri, 
     )
     return RedirectResponse(url)
 
