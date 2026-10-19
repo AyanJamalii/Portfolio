@@ -7,7 +7,6 @@ import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
 import ConnectSection from "@/components/ConnectSection";
 import FadeIn from "@/components/FadeIn";
-import TextLoop from "@/components/TextLoop";
 
 const skills = [
   "HTML",
@@ -95,6 +94,7 @@ const projects = [
     live: "",
   },
 ];
+  const emailLink = "mailto:here.ayanjamali@gmail.com";
 
 export default function Home() {
     useEffect(() => {
@@ -154,6 +154,8 @@ useEffect(() => {
     });
   };
 
+
+
   return (
     <main className="site-shell">
 
@@ -162,17 +164,10 @@ useEffect(() => {
           Ayan    J.
         </a>
 
-        <button
-          className="nav-cta"
-          onClick={() =>
-            document.getElementById("contact")?.scrollIntoView({
-              behavior: "smooth",
-            })
-          }
-        >
-            Let&apos;s Talk
-            <Mail size={16} strokeWidth={1.8} />
-        </button>
+        <a className="nav-cta" href={emailLink}>
+  Let&apos;s Talk
+  <Mail size={16} strokeWidth={1.8} />
+</a>
       </header>
 
       {/* hero */}
@@ -244,48 +239,14 @@ useEffect(() => {
                 into polished experiences.
               </p>
 
-              <button
-                className="hero-button"
-                onClick={() =>
-                  document.getElementById("contact")?.scrollIntoView({
-                    behavior: "smooth",
-                  })
-                }
-              >
-                 Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
-              </button>
+              <a className="hero-button" href={emailLink}>
+   Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
+</a>
             </div>
           </div>
         </div>
       </section>
-<FadeIn direction="up">
-        <div style={{ marginBottom: "40px" }}>
-          <TextLoop
-            text="Frontend Developer ✦ AI Engineer ✦ React ✦ LangGraph ✦"
-  shape="wave"
-  speed={90}
-  direction="forward"
-  separator="✦"
-  curviness={30}
-  tilt={0}
-  fontSize={26}
-  fontWeight={800}
-  letterSpacing={2}
-  uppercase
-  ribbon
-  ribbonColor="#01040b"
-  ribbonWidth={50}
-  edgeFade={0}
-  cross={false}
-  crossAngle={16}
-  draggable={false}
-  scrollBoost={0}
-  outline={false}
-  pauseOnHover
-  outlineWidth={1.5}
-          />
-        </div>
-      </FadeIn>
+
       {/* nav */}
 
       <nav className="section-tabs">
@@ -361,7 +322,13 @@ useEffect(() => {
                     ) : (
                       <a href={project.live}>Visit Site ↗</a>
                     )}
-                    <a href={project.github}>◉ View on Github</a>
+                    <a
+  href="https://github.com/AyanJamalii"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  ◉ View on GitHub
+</a>
                   </div>
                 </div>
               </article>

@@ -130,7 +130,7 @@ a {
   justify-content: center;
   padding: 150px 24px 90px;
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible ;
 }
 .hero-glow {
   z-index: -1;
@@ -956,6 +956,20 @@ a {
   font-weight: 600;
   font-family: var(--font-archivo), sans-serif;
   color: #f4f4f5;
+}
+
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .text-loop-section {
+    height: 130px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-loop-section {
+    height: 105px;
+  }
 }
 
 /* Mobile Responsiveness */

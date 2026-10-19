@@ -49,7 +49,7 @@ interface FadeStop {
 }
 
 const VIEW_W = 1200;
-const VIEW_H = 520;
+const VIEW_H = 240;
 const CX = VIEW_W / 2;
 const CY = VIEW_H / 2;
 const EDGE_PAD = 6;
@@ -501,7 +501,7 @@ const TextLoop = ({
     >
       <svg
         ref={svgRef}
-        className="block w-full h-auto"
+        className="text-loop-svg"
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
