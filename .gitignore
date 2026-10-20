@@ -18,3 +18,7 @@ out/
 
 .DS_Store
 Thumbs.db
+
+google_token.json
+**/google_token.json
+token.json

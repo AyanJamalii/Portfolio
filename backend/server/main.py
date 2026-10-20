@@ -193,23 +193,35 @@ def create_google_flow(state=None):
     flow.redirect_uri = os.getenv("GOOGLE_REDIRECT_URI")
     return flow
 
-
 def get_calendar_service():
-    print("CWD:", Path.cwd())
-    print("Token path:", TOKEN_PATH.resolve(), "exists:", TOKEN_PATH.exists())
+    token_json = os.getenv("GOOGLE_TOKEN_JSON_CONTENT")
 
-    if not TOKEN_PATH.exists():
+    if token_json:
+        credentials = Credentials.from_authorized_user_info(
+            json.loads(token_json), GOOGLE_SCOPES
+        )
+    elif TOKEN_PATH.exists():
+        credentials = Credentials.from_authorized_user_file(
+            str(TOKEN_PATH), GOOGLE_SCOPES
+        )
+    else:
         raise HTTPException(
             status_code=401,
             detail="Google Calendar has not been connected yet.",
         )
 
-    credentials = Credentials.from_authorized_user_file(
-        str(TOKEN_PATH), GOOGLE_SCOPES
-    )
-    print("Has refresh token:", bool(credentials.refresh_token), "expired:", credentials.expired)
+    if credentials.expired and credentials.refresh_token:
+        credentials.refresh(Request())
+        if not token_json:
+            TOKEN_PATH.write_text(credentials.to_json(), encoding="utf-8")
 
+    if not credentials.valid:
+        raise HTTPException(
+            status_code=401,
+            detail="Google authorization expired. Reconnect Calendar.",
+        )
 
+    return build("calendar", "v3", credentials=credentials)
 
 @app.get("/oauth/start")
 def oauth_start():
