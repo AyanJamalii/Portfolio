@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from 'next/image'
-import { Mail, } from "lucide-react";
+import Image from "next/image";
+import { Mail } from "lucide-react";
 import FolderFloat from "@/components/FolderFloat";
 import AISection from "@/components/AISection";
 import ConnectSection from "@/components/ConnectSection";
@@ -74,7 +74,13 @@ const projects = [
   {
     title: "Legal & HR Document Q&A RAG Agent",
     date: "July 2026 – August 2026",
-    stack: ["Next.js", "FastAPI", "LangChain RAG", "ChromaDB", "Gemini Embeddings"],
+    stack: [
+      "Next.js",
+      "FastAPI",
+      "LangChain RAG",
+      "ChromaDB",
+      "Gemini Embeddings",
+    ],
     description:
       "A corporate dashboard allowing users to upload business contracts and HR policies, utilizing a vector database and RAG architecture to extract precise answers and summaries.",
     highlight:
@@ -85,7 +91,13 @@ const projects = [
   {
     title: "Real Estate Lead Qualification & Tour Bot",
     date: "June 2026 – July 2026",
-    stack: ["React", "Tailwind CSS", "LangGraph", "FastAPI", "OpenAI/Gemini API"],
+    stack: [
+      "React",
+      "Tailwind CSS",
+      "LangGraph",
+      "FastAPI",
+      "OpenAI/Gemini API",
+    ],
     description:
       "A property listing web application equipped with a multi-step LangGraph conversational agent that qualifies buyers, shares property specs, and coordinates property tours.",
     highlight:
@@ -94,19 +106,13 @@ const projects = [
     live: "",
   },
 ];
-  const emailLink = "mailto:here.ayanjamali@gmail.com";
+const emailLink = "mailto:here.ayanjamali@gmail.com";
 
 export default function Home() {
-    useEffect(() => {
-  console.log("AYAN PORTFOLIO CLIENT JS IS RUNNING");
-}, []);
-  const [activeTab, setActiveTab] = useState<"projects" | "about">(
-    "projects"
-  );
+  useEffect(() => {}, []);
+  const [activeTab, setActiveTab] = useState<"projects" | "about">("projects");
 
   const [activeHeroPoint, setActiveHeroPoint] = useState(0);
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -119,33 +125,33 @@ export default function Home() {
   /*
    * PROJECT / ABOUT SCROLL SPY
    */
-useEffect(() => {
-  const handleScroll = () => {
-    const projectsSection = document.getElementById("projects");
-    const aboutSection = document.getElementById("about");
+  useEffect(() => {
+    const handleScroll = () => {
+      const projectsSection = document.getElementById("projects");
+      const aboutSection = document.getElementById("about");
 
-    if (!projectsSection || !aboutSection) return;
+      if (!projectsSection || !aboutSection) return;
 
-    const scrollPosition = window.scrollY + 150;
+      const scrollPosition = window.scrollY + 150;
 
-    const projectsTop = projectsSection.offsetTop;
-    const aboutTop = aboutSection.offsetTop;
+      const projectsTop = projectsSection.offsetTop;
+      const aboutTop = aboutSection.offsetTop;
 
-    if (scrollPosition >= aboutTop) {
-      setActiveTab("about");
-    } else {
-      setActiveTab("projects");
-    }
-  };
+      if (scrollPosition >= aboutTop) {
+        setActiveTab("about");
+      } else {
+        setActiveTab("projects");
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  handleScroll();
+    handleScroll();
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []); 
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const scrollToSection = (id: "projects" | "about") => {
     document.getElementById(id)?.scrollIntoView({
@@ -154,20 +160,17 @@ useEffect(() => {
     });
   };
 
-
-
   return (
     <main className="site-shell">
-
       <header className="navbar">
         <a href="#top" className="logo">
-          Ayan    J.
+          Ayan J.
         </a>
 
         <a className="nav-cta" href={emailLink}>
-  Let&apos;s Talk
-  <Mail size={16} strokeWidth={1.8} />
-</a>
+          Let&apos;s Talk
+          <Mail size={16} strokeWidth={1.8} />
+        </a>
       </header>
 
       {/* hero */}
@@ -188,7 +191,6 @@ useEffect(() => {
           </h1>
 
           <div className="hero-grid">
-
             <div className="hero-feature-wrapper">
               <div className="hero-feature-rail">
                 <div
@@ -228,20 +230,21 @@ useEffect(() => {
                 alt="Ayan"
                 width={500}
                 height={500}
-                className="portrait"              />
+                className="portrait"
+              />
             </div>
 
             <div className="hero-side-copy hero-side-copy-right">
               <p>
-                Crafting responsive, high-performance React & Next.js
-                interfaces powered by intelligent AI agent backends. I care
-                about clean systems, useful interactions and turning ideas
-                into polished experiences.
+                Crafting responsive, high-performance React & Next.js interfaces
+                powered by intelligent AI agent backends. I care about clean
+                systems, useful interactions and turning ideas into polished
+                experiences.
               </p>
 
               <a className="hero-button" href={emailLink}>
-   Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
-</a>
+                Let&apos;s Talk <Mail size={16} strokeWidth={1.8} />
+              </a>
             </div>
           </div>
         </div>
@@ -323,12 +326,12 @@ useEffect(() => {
                       <a href={project.live}>Visit Site ↗</a>
                     )}
                     <a
-  href="https://github.com/AyanJamalii"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  ◉ View on GitHub
-</a>
+                      href="https://github.com/AyanJamalii"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      ◉ View on GitHub
+                    </a>
                   </div>
                 </div>
               </article>
@@ -351,7 +354,10 @@ useEffect(() => {
           <div className="about-grid">
             <div>
               <p className="about-large">
-                Hi, I&apos;m Ayan, a 19-year-old Computer Science student and aspiring AI Engineer. I build minimal frontend interfaces and orchestrate Gen AI &amp; Agentic AI workflows, exploring how intelligent code makes the web feel seamless.
+                Hi, I&apos;m Ayan, a 19-year-old Computer Science student and
+                aspiring AI Engineer. I build minimal frontend interfaces and
+                orchestrate Gen AI &amp; Agentic AI workflows, exploring how
+                intelligent code makes the web feel seamless.
               </p>
             </div>
 
@@ -363,8 +369,8 @@ useEffect(() => {
               </p>
 
               <p>
-                My current focus is combining polished interfaces with useful
-                AI systems — creating products that feel simple on the surface
+                My current focus is combining polished interfaces with useful AI
+                systems — creating products that feel simple on the surface
                 while having powerful systems underneath.
               </p>
 
@@ -417,7 +423,10 @@ useEffect(() => {
       {/* footer */}
 
       <footer className="footer">
-        <span>© 2026 Ayan J. All rights reserved |   Your friendly neighborhood developer. :)</span>
+        <span>
+          © 2026 Ayan J. All rights reserved | Your friendly neighborhood
+          developer. :)
+        </span>
       </footer>
     </main>
   );

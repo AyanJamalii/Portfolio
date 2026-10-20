@@ -16,6 +16,7 @@ from langgraph.graph import START, END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
 import requests
+from zoneinfo import ZoneInfo
 
 load_dotenv()
 
@@ -108,7 +109,7 @@ IMPORTANT RULES:
 8. If asked about something unrelated to Ayan's professional profile, politely redirect the conversation toward the portfolio.
 9. Keep answers concise and conversational.
 10. For simple questions, answer in 1-3 short sentences.
-11. If a visitor wants to schedule a meeting, try `book_meeting_tool`. If calendar booking fails or they want to email, use `send_email_tool`.
+11. If a visitor wants a meeting: collect name, email, date/time, and duration, then call `book_meeting_tool`. If it fails, call `send_email_tool` and tell them Ayan will confirm by email. If the visitor only wants to contact Ayan (no meeting), call only `send_email_tool`. Never say you sent or booked anything unless the tool returned success.
 """
 
 
@@ -123,13 +124,15 @@ model = ChatGroq(
 
 
 def call_model(state: AgentState):
-    messages = state["messages"]
-    response = model.invoke(
-        [
-            SystemMessage(content=SYSTEM_PROMPT),
-            *messages,
-        ]
+    now = datetime.now(ZoneInfo("Asia/Karachi")).strftime(
+        "%A, %d %B %Y, %H:%M (UTC+05:00)"
     )
+    prompt = (
+        SYSTEM_PROMPT
+        + f"\n\nCurrent date and time: {now}. Use this to resolve words like "
+        "'tomorrow'. Assume the visitor's timezone from what they say."
+    )
+    response = model.invoke([SystemMessage(content=prompt), *state["messages"]])
     return {"messages": [response]}
 
 

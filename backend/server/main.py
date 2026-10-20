@@ -1,6 +1,7 @@
 import os
 import smtplib
 from email.message import EmailMessage
+import requests
 
 import uvicorn
 from dotenv import load_dotenv
@@ -23,6 +24,8 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
 load_dotenv()
+
+
 
 app = FastAPI(
     title="Ayan AI Portfolio API",
@@ -64,6 +67,29 @@ class MeetingRequest(BaseModel):
 class MeetingResponse(BaseModel):
     message: str
 
+def send_email(subject: str, body: str, reply_to: str | None = None):
+    api_key = os.getenv("RESEND_API_KEY")
+    recipient = os.getenv("MEETING_RECIPIENT_EMAIL")
+    if not api_key or not recipient:
+        raise HTTPException(500, "Email service is not configured properly.")
+
+    payload = {
+        "from": "Portfolio <onboarding@resend.dev>",
+        "to": [recipient],
+        "subject": subject,
+        "text": body,
+    }
+    if reply_to:
+        payload["reply_to"] = reply_to
+
+    r = requests.post(
+        "https://api.resend.com/emails",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json=payload,
+        timeout=20,
+    )
+    if r.status_code >= 300:
+        raise Exception(f"Resend error {r.status_code}: {r.text}")
 
 @app.get("/")
 def root():
@@ -119,55 +145,21 @@ def chat(request: ChatRequest):
 @app.post("/meeting", response_model=MeetingResponse)
 def meeting(request: MeetingRequest):
     try:
-        smtp_host = os.getenv("SMTP_HOST")
-        smtp_port = int(os.getenv("SMTP_PORT", "465"))
-        smtp_username = os.getenv("SMTP_USERNAME")
-        smtp_password = os.getenv("SMTP_PASSWORD")
-        recipient_email = os.getenv("MEETING_RECIPIENT_EMAIL")
-
-        if not all([
-            smtp_host,
-            smtp_username,
-            smtp_password,
-            recipient_email,
-        ]):
-            raise HTTPException(
-                status_code=500,
-                detail="Email service is not configured properly.",
-            )
-
-        email_message = EmailMessage()
-        email_message["Subject"] = (
-            f"New Portfolio Meeting Request from {request.name}"
+        send_email(
+            subject=f"New Portfolio Meeting Request from {request.name}",
+            body=(
+                "New meeting request from your portfolio:\n\n"
+                f"Name: {request.name}\nEmail: {request.email}\n"
+                f"Message: {request.message}\n"
+            ),
+            reply_to=request.email,
         )
-        email_message["From"] = smtp_username
-        email_message["To"] = recipient_email
-        email_message["Reply-To"] = request.email
-
-        email_message.set_content(
-            "New meeting request from your portfolio:\n\n"
-            f"Name: {request.name}\n"
-            f"Email: {request.email}\n"
-            f"Message: {request.message}\n\n"
-            "You can reply directly to this email."
-        )
-
-        with smtplib.SMTP_SSL(smtp_host, 465, timeout=20) as smtp:
-            smtp.login(smtp_username, smtp_password)
-            smtp.send_message(email_message)
-
-        return MeetingResponse(
-            message="Meeting request sent successfully."
-        )
-
+        return MeetingResponse(message="Meeting request sent successfully.")
     except HTTPException:
         raise
     except Exception as e:
         print(f"Email Error: {type(e).__name__}: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail="Unable to send meeting request.",
-        ) from e
+        raise HTTPException(500, "Unable to send meeting request.") from e
 
 
 # Google Calendar integration
@@ -175,7 +167,10 @@ GOOGLE_SCOPES = [
     "https://www.googleapis.com/auth/calendar.events",
 ]
 
-TOKEN_PATH = Path(os.getenv("GOOGLE_TOKEN_JSON", "google_token.json"))
+TOKEN_PATH = Path(
+    os.getenv("GOOGLE_TOKEN_JSON", str(Path(__file__).parent / "google_token.json"))
+)
+print("Google token path:", TOKEN_PATH.resolve(), "exists:", TOKEN_PATH.exists())
 
 
 def create_google_flow(state=None):
@@ -193,12 +188,16 @@ def create_google_flow(state=None):
         client_config,
         scopes=GOOGLE_SCOPES,
         state=state,
+        autogenerate_code_verifier=False,
     )
     flow.redirect_uri = os.getenv("GOOGLE_REDIRECT_URI")
     return flow
 
 
 def get_calendar_service():
+    print("CWD:", Path.cwd())
+    print("Token path:", TOKEN_PATH.resolve(), "exists:", TOKEN_PATH.exists())
+
     if not TOKEN_PATH.exists():
         raise HTTPException(
             status_code=401,
@@ -208,21 +207,9 @@ def get_calendar_service():
     credentials = Credentials.from_authorized_user_file(
         str(TOKEN_PATH), GOOGLE_SCOPES
     )
-
-    if credentials.expired and credentials.refresh_token:
-        credentials.refresh(Request())
-        TOKEN_PATH.write_text(credentials.to_json(), encoding="utf-8")
-
-    if not credentials.valid:
-        raise HTTPException(
-            status_code=401,
-            detail="Google authorization expired. Reconnect Calendar.",
-        )
-
-    return build("calendar", "v3", credentials=credentials)
+    print("Has refresh token:", bool(credentials.refresh_token), "expired:", credentials.expired)
 
 
-oauth_store = {}
 
 @app.get("/oauth/start")
 def oauth_start():
@@ -230,13 +217,11 @@ def oauth_start():
         raise HTTPException(500, "Google OAuth is not configured.")
 
     flow = create_google_flow()
-    url, state = flow.authorization_url(
+    url, _state = flow.authorization_url(
         access_type="offline",
         prompt="consent",
         include_granted_scopes="true",
     )
-    
-    oauth_store[state] = flow.code_verifier
     return RedirectResponse(url)
 
 
@@ -245,27 +230,20 @@ def oauth_callback(
     code: str = Query(...),
     state: str = Query(...),
 ):
-    stored_verifier = oauth_store.get(state)
-    
     flow = create_google_flow(state=state)
-    if stored_verifier:
-        flow.code_verifier = stored_verifier
 
     try:
         flow.fetch_token(code=code)
         credentials = flow.credentials
 
         TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
-        TOKEN_PATH.write_text(
-            credentials.to_json(),
-            encoding="utf-8",
-        )
-        
-        oauth_store.pop(state, None)
+        TOKEN_PATH.write_text(credentials.to_json(), encoding="utf-8")
 
+        print("Token saved to:", TOKEN_PATH.resolve())
         return {
             "status": "connected",
             "message": "Google Calendar authorization saved successfully!",
+            "saved_to": str(TOKEN_PATH.resolve()),
         }
     except Exception as e:
         print(f"Google OAuth Error: {type(e).__name__}: {e}")
@@ -327,7 +305,20 @@ def book_calendar_event(request: CalendarBookingRequest):
             body=event,
             conferenceDataVersion=1,
             sendUpdates="all",
-        ).execute()
+         ).execute()
+
+        try:
+            send_email(
+                subject=f"Meeting booked: {request.name}",
+                body=(
+                    f"{request.name} ({request.email}) booked a meeting.\n"
+                    f"Start: {start.isoformat()}\nEnd: {end.isoformat()}\n"
+                    f"Notes: {request.message}\nCalendar: {created.get('htmlLink')}\n"
+                ),
+                reply_to=request.email,
+            )
+        except Exception as e:
+            print(f"Notification email failed: {e}")
 
         meet_link = created.get("hangoutLink")
         if not meet_link:
