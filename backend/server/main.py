@@ -292,6 +292,20 @@ def book_calendar_event(request: CalendarBookingRequest):
 
         service = get_calendar_service()
 
+        busy = service.freebusy().query(
+            body={
+                "timeMin": start.isoformat(),
+                "timeMax": end.isoformat(),
+                "items": [{"id": "primary"}],
+            }
+        ).execute()
+
+        if busy["calendars"]["primary"]["busy"]:
+            raise HTTPException(
+                status_code=409,
+                detail="That time slot is already booked. Please choose a different time.",
+            )
+
         event = {
             "summary": f"Portfolio meeting with {request.name}",
             "description": request.message or "Meeting requested via Ayan's portfolio.",
