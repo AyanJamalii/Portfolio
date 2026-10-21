@@ -292,15 +292,21 @@ def book_calendar_event(request: CalendarBookingRequest):
 
         service = get_calendar_service()
 
-        busy = service.freebusy().query(
-            body={
-                "timeMin": start.isoformat(),
-                "timeMax": end.isoformat(),
-                "items": [{"id": "primary"}],
-            }
-        ).execute()
+        existing = service.events().list(
+            calendarId="primary",
+            timeMin=start.isoformat(),
+            timeMax=end.isoformat(),
+            singleEvents=True,
+            maxResults=10,
+        ).execute().get("items", [])
 
-        if busy["calendars"]["primary"]["busy"]:
+        conflicts = [
+            e for e in existing
+            if e.get("status") != "cancelled"
+            and e.get("transparency") != "transparent"
+        ]
+
+        if conflicts:
             raise HTTPException(
                 status_code=409,
                 detail="That time slot is already booked. Please choose a different time.",
