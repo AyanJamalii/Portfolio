@@ -33,10 +33,17 @@ with open(data_path, "r", encoding="utf-8") as file:
 # Tool 1: Book meeting on Google Calendar
 @tool
 def book_meeting_tool(
-    name: str, email: str, start_time: str, end_time: str, message: str = ""
+    name: str,
+    email: str,
+    start_time: str,
+    city_or_timezone: str,
+    duration_minutes: int = 30,
+    message: str = "",
 ):
     """Books a meeting on Ayan's Google Calendar.
-    Times must be provided in ISO format with timezone offsets (e.g., 2026-10-25T15:00:00+05:00).
+    start_time is the visitor's LOCAL time in ISO format with NO UTC offset, e.g. 2026-10-25T17:00:00.
+    If the time came from check_availability_tool, pass its ISO start value exactly as returned.
+    city_or_timezone is the visitor's city (e.g. 'Istanbul', 'Karachi') or a GMT offset if that is all they know.
     """
     try:
         backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
@@ -44,8 +51,8 @@ def book_meeting_tool(
             "name": name,
             "email": email,
             "start_time": start_time,
-            "end_time": end_time,
-            "timezone": "Asia/Karachi",
+            "duration_minutes": duration_minutes,
+            "timezone": city_or_timezone,
             "message": message,
         }
         response = requests.post(
@@ -53,9 +60,12 @@ def book_meeting_tool(
         )
         if response.status_code == 200:
             data = response.json()
-            return f"Meeting successfully booked! Google Meet link: {data.get('meet_link')}"
-        else:
-            return f"Failed to book meeting: {response.text}"
+            return (
+                f"Meeting successfully booked! When: {data.get('when')} "
+                f"(Ayan's time: {data.get('ayan_time')}). "
+                f"Google Meet link: {data.get('meet_link')}"
+            )
+        return f"Failed to book meeting (HTTP {response.status_code}): {response.text}"
     except Exception as e:
         return f"Error connecting to calendar service: {str(e)}"
 
@@ -81,16 +91,64 @@ def send_email_tool(name: str, email: str, message: str):
     except Exception as e:
         return f"Error connecting to email service: {str(e)}"
 
+    
+@tool
+def check_availability_tool(date: str, city_or_timezone: str, duration_minutes: int = 30):
+    """Lists Ayan's free time slots on one day, shown in the visitor's own timezone.
+    date must be YYYY-MM-DD (the visitor's local date). city_or_timezone is the visitor's city.
+    Use this when the visitor gives no exact time, or asks Ayan to pick a time when he is free."""
+    try:
+        backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+        response = requests.get(
+            f"{backend_url}/calendar/availability",
+            params={"day": date, "duration": duration_minutes, "timezone": city_or_timezone},
+            timeout=20,
+        )
+        if response.status_code != 200:
+            return f"Could not check availability (HTTP {response.status_code}): {response.text}"
+        data = response.json()
+        slots = data["free_slots"]
+        if not slots:
+            return (
+                f"No free slots on {date} in {data['timezone']}. "
+                f"{data.get('note', '')} Ayan is available {data['ayan_hours']}. "
+                "Ask the visitor for another day."
+            )
+        step = max(1, len(slots) // 5)
+        picked = slots[::step][:6]
+        listing = ", ".join(f"{s['label']} [{s['start']}]" for s in picked)
+        return f"Free slots on {date} ({data['timezone']}): {listing}"
+    except Exception as e:
+        return f"Error checking availability: {str(e)}"
 
-tools = [book_meeting_tool, send_email_tool]
+
+
+@tool
+def cancel_meeting_tool(email: str):
+    """Cancels the visitor's upcoming meeting with Ayan, found by their email address."""
+    try:
+        backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+        response = requests.post(
+            f"{backend_url}/calendar/cancel", json={"email": email}, timeout=20
+        )
+        if response.status_code == 200:
+            return f"Cancelled: {', '.join(response.json().get('cancelled', []))}"
+        return f"Failed to cancel (HTTP {response.status_code}): {response.text}"
+    except Exception as e:
+        return f"Error cancelling meeting: {str(e)}"
+
+
+tools = [book_meeting_tool, send_email_tool, check_availability_tool, cancel_meeting_tool]
 
 SYSTEM_PROMPT = f"""
 You are Ayan AI, the professional portfolio assistant for Ayan Jamali.
 Your job is to answer questions about Ayan's education, technical skills, programming knowledge, projects, frontend development experience, AI engineering journey, tools and technologies, APIs, and professional interests.
 
-You have access to two tools:
-1. `book_meeting_tool`: To schedule meetings directly on Ayan's Google Calendar.
-2. `send_email_tool`: To send a direct meeting request email to Ayan if calendar booking fails or the user prefers emailing.
+You have access to four tools:
+1. `book_meeting_tool`: schedule a meeting on Ayan's Google Calendar.
+2. `send_email_tool`: send a message or meeting request email to Ayan.
+3. `check_availability_tool`: list Ayan's free slots on a given day.
+4. `cancel_meeting_tool`: cancel the visitor's upcoming meeting.
 
 Use the profile below as your primary source of truth.
 
@@ -98,7 +156,7 @@ Use the profile below as your primary source of truth.
 {json.dumps(ayan_profile, indent=2)}
 -------------------
 
-IMPORTANT RULES: 
+IMPORTANT RULES:
 1. Only provide information that is supported by the profile or by the conversation.
 2. Do not invent projects, experience, skills, achievements, employment history, or qualifications.
 3. If information is not available in the profile, say that you don't have that information.
@@ -107,11 +165,15 @@ IMPORTANT RULES:
 6. You are representing Ayan's portfolio, so do not pretend to be Ayan himself.
 7. If asked about something unrelated to Ayan's professional profile, politely redirect the conversation toward the portfolio.
 8. Keep answers clear, concise, professional and conversational. For simple questions, answer in 1-3 short sentences.
-9. To book a meeting, first collect the visitor's name, email, date/time (with timezone) and duration, then call `book_meeting_tool`. When booking succeeds, share the Google Meet link from the tool result.
-10. If `book_meeting_tool` says the time slot is already booked, tell the visitor that slot is taken and ask them to suggest another time. Do NOT call `send_email_tool` in that case unless they ask you to.
-11. If `book_meeting_tool` fails for any other reason, call `send_email_tool` with the visitor's details as a meeting request and tell them Ayan will confirm by email.
+9. To book a meeting, collect the visitor's name, email, date, time, duration and CITY. Ask "Which city are you in?" and never ask for a GMT or UTC offset; if they volunteer one like GMT+5, that is fine. If they only give a country with several timezones (USA, Canada, Australia, Brazil, Russia), ask for their city. Then call `book_meeting_tool` with start_time as their local time without an offset (for example 2026-10-25T17:00:00) and the city. When booking succeeds, repeat the full date with weekday, the time in the visitor's own timezone as returned by the tool, and the Google Meet link.
+10. If `book_meeting_tool` says SLOT_TAKEN or that the time slot is already booked, tell the visitor that slot is taken and ask them to suggest another time. Do NOT call `send_email_tool` in that case unless they ask you to.
+11. If `book_meeting_tool` fails because the calendar itself is unavailable (an authorization error, "Unable to create calendar meeting", or "Error connecting to calendar service"), call `send_email_tool` with the visitor's details as a meeting request and tell them Ayan will confirm by email. If it fails because of the visitor's input (past time, invalid email, unknown city, bad duration), explain the problem in one short sentence and ask them to correct it. Do not send an email for those.
 12. If a visitor wants to send Ayan a message, note, or email about ANY topic (even if a meeting was already booked, or the message is unrelated to the meeting), call only `send_email_tool` with their name, email, and message. You never need to reveal Ayan's email address to do this, because the tool sends it for you. Reuse the name and email the visitor already gave earlier in the chat instead of asking again.
-13. Never say you booked or sent anything unless the tool returned success. If a tool fails, tell the visitor what failed in one short sentence.   
+13. Never say you booked or sent anything unless the tool returned success. If a tool fails, tell the visitor what failed in one short sentence.
+14. If the visitor gives a day but no exact time, or says Ayan can pick any time he is free, call `check_availability_tool` with that date and their city. Never guess free times yourself. Offer 3 or 4 of the returned slots (they are already in the visitor's local time) and ask which one they prefer. After they choose, call `book_meeting_tool` with the exact ISO start value from the tool result.
+15. If `book_meeting_tool` says ALREADY_BOOKED, tell the visitor they already have a meeting at the time given and ask whether they want to keep it or cancel it and book a new one. Do not send an email.
+16. If the visitor asks to cancel or reschedule, call `cancel_meeting_tool` with their email. For a reschedule, cancel first, then offer new slots as in rule 14. Report what the tool returned.
+17. If a tool says UNKNOWN_TIMEZONE, ask the visitor which city they are in and try again. For "today" or "tomorrow", use the visitor's local date and confirm the exact date and weekday back to them before booking. 
 """
 
 
