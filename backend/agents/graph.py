@@ -2,21 +2,20 @@ import json
 import os
 from datetime import datetime
 from typing import Annotated, TypedDict
+from zoneinfo import ZoneInfo
 
+import requests
 from dotenv import load_dotenv
 from langchain_core.messages import (
     BaseMessage,
-    HumanMessage,
     SystemMessage,
 )
 from langchain_core.tools import tool
 from langchain_groq import ChatGroq
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import START, END, StateGraph
+from langgraph.graph import START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
-import requests
-from zoneinfo import ZoneInfo
 
 load_dotenv()
 
@@ -26,7 +25,7 @@ data_path = os.path.join(
     "data",
     "ayan_profile.json",
 )
-with open(data_path, "r", encoding="utf-8") as file:
+with open(data_path, encoding="utf-8") as file:
     ayan_profile = json.load(file)
 
 
@@ -55,9 +54,7 @@ def book_meeting_tool(
             "timezone": city_or_timezone,
             "message": message,
         }
-        response = requests.post(
-            f"{backend_url}/calendar/book", json=payload, timeout=20
-        )
+        response = requests.post(f"{backend_url}/calendar/book", json=payload, timeout=20)
         if response.status_code == 200:
             data = response.json()
             return (
@@ -81,9 +78,7 @@ def send_email_tool(name: str, email: str, message: str):
             "email": email,
             "message": message,
         }
-        response = requests.post(
-            f"{backend_url}/meeting", json=payload, timeout=20
-        )
+        response = requests.post(f"{backend_url}/meeting", json=payload, timeout=20)
         if response.status_code == 200:
             return "Meeting request email has been successfully sent to Ayan!"
         else:
@@ -91,7 +86,7 @@ def send_email_tool(name: str, email: str, message: str):
     except Exception as e:
         return f"Error connecting to email service: {str(e)}"
 
-    
+
 @tool
 def check_availability_tool(date: str, city_or_timezone: str, duration_minutes: int = 30):
     """Lists Ayan's free time slots on one day, shown in the visitor's own timezone.
@@ -101,7 +96,11 @@ def check_availability_tool(date: str, city_or_timezone: str, duration_minutes: 
         backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
         response = requests.get(
             f"{backend_url}/calendar/availability",
-            params={"day": date, "duration": duration_minutes, "timezone": city_or_timezone},
+            params={
+                "day": date,
+                "duration": duration_minutes,
+                "timezone": city_or_timezone,
+            },
             timeout=20,
         )
         if response.status_code != 200:
@@ -122,7 +121,6 @@ def check_availability_tool(date: str, city_or_timezone: str, duration_minutes: 
         return f"Error checking availability: {str(e)}"
 
 
-
 @tool
 def cancel_meeting_tool(email: str):
     """Cancels the visitor's upcoming meeting with Ayan, found by their email address."""
@@ -138,7 +136,12 @@ def cancel_meeting_tool(email: str):
         return f"Error cancelling meeting: {str(e)}"
 
 
-tools = [book_meeting_tool, send_email_tool, check_availability_tool, cancel_meeting_tool]
+tools = [
+    book_meeting_tool,
+    send_email_tool,
+    check_availability_tool,
+    cancel_meeting_tool,
+]
 
 SYSTEM_PROMPT = f"""
 You are Ayan AI, the professional portfolio assistant for Ayan Jamali.
@@ -188,12 +191,9 @@ model = ChatGroq(
 
 
 def call_model(state: AgentState):
-    now = datetime.now(ZoneInfo("Asia/Karachi")).strftime(
-        "%A, %d %B %Y, %H:%M (UTC+05:00)"
-    )
+    now = datetime.now(ZoneInfo("Asia/Karachi")).strftime("%A, %d %B %Y, %H:%M (UTC+05:00)")
     prompt = (
-        SYSTEM_PROMPT
-        + f"\n\nCurrent date and time: {now}. Use this to resolve words like "
+        SYSTEM_PROMPT + f"\n\nCurrent date and time: {now}. Use this to resolve words like "
         "'tomorrow'. Assume the visitor's timezone from what they say."
     )
     response = model.invoke([SystemMessage(content=prompt), *state["messages"]])

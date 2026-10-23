@@ -1,5 +1,9 @@
-import os, smtplib, socket
+import os
+import smtplib
+import socket
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 user = os.getenv("SMTP_USERNAME")
