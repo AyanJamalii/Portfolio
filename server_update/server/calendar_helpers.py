@@ -66,3 +66,8 @@ def upcoming_visitor_events(service, email: str) -> list:
         if email in attendees:
             found.append(e)
     return found
+
+
+def event_cancel_code(e: dict) -> str | None:
+    private = (e.get("extendedProperties") or {}).get("private") or {}
+    return private.get("cancel_code")

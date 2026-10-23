@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from "react-markdown";
 
 export default function AISection() {
@@ -8,11 +8,35 @@ export default function AISection() {
     const [messages, setMessages] = useState<{role: "user" | "assistant"; content: string}[]>([
         {
             role: "assistant",
-            content: "Hi, I'm Ayan AI. Ask me anything about Ayan's Skills, education, learning or professional Experience."
+            content: "Hi, I'm Ayan AI. Ask me anything about Ayan's Skills, education, learning or professional Experience or just Schedule a meeting with him."
         },
     ]);
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const messagesRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = messagesRef.current;
+        if (!el) return;
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }, [messages, isLoading]);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+
+    // Grow the box with the text (up to the CSS max-height), shrink back after sending
+    useEffect(() => {
+        const el = inputRef.current;
+        if (!el) return;
+        el.style.height = "auto";
+        el.style.height = `${el.scrollHeight}px`;
+    }, [message]);
+
+    // Put the cursor back in the box after Ayan AI replies
+    useEffect(() => {
+        if (!isLoading && messages.length > 1) {
+            inputRef.current?.focus({ preventScroll: true });
+        }
+    }, [isLoading, messages.length]);
     
 async function handleSubmit(
   event: React.SubmitEvent<HTMLFormElement>
@@ -76,6 +100,16 @@ async function handleSubmit(
     setIsLoading(false);
   }
 }
+
+function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  // Enter sends, Shift+Enter makes a new line (and don't interrupt IME typing)
+  if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
+  }
+}
+
+
 return (
     <section id="ai" className="ai-section">
       <div className="ai-intro">
@@ -105,7 +139,7 @@ return (
           </div>
         </div>
 
-        <div className="ai-messages">
+        <div className="ai-messages" ref={messagesRef}>
           {messages.map((item, index) => (
             <div
   key={`${item.role}-${index}`}
@@ -129,12 +163,16 @@ return (
         </div>
 
         <form className="ai-input-wrapper" onSubmit={handleSubmit}>
-          <input
-            type="text"
+          <textarea
+            ref={inputRef}
+            rows={1}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Ask anything about Ayan..."
             aria-label="Ask Ayan AI"
+            enterKeyHint="send"
+            maxLength={2000}
             disabled={isLoading}
           />
 

@@ -9,9 +9,17 @@ from fastapi import APIRouter, HTTPException, Query
 
 from ..calendar_helpers import (
     blocks_time,
+    event_cancel_code,
     event_range,
     event_tz,
     upcoming_visitor_events,
+)
+from ..cancel_codes import (
+    check_not_locked,
+    clear_failures,
+    codes_match,
+    new_cancel_code,
+    record_failure,
 )
 from ..config import (
     DAY_END_HOUR,
@@ -182,14 +190,21 @@ def _booking_window(request: CalendarBookingRequest, tz) -> tuple[datetime, date
     return start, end, minutes
 
 
-def _event_body(name: str, email: str, message: str, start, end, tz_name: str) -> dict:
+def _event_body(
+    name: str, email: str, message: str, start, end, tz_name: str, cancel_code: str
+) -> dict:
+    note = message.strip() or "Meeting requested via Ayan's portfolio."
+    description = (
+        f"{note}\n\n"
+        f"Cancel code (needed to cancel or reschedule through the portfolio chat): {cancel_code}"
+    )
     return {
         "summary": f"Portfolio meeting with {name}",
-        "description": message.strip() or "Meeting requested via Ayan's portfolio.",
+        "description": description,
         "start": {"dateTime": start.isoformat(), "timeZone": tz_name},
         "end": {"dateTime": end.isoformat(), "timeZone": tz_name},
         "attendees": [{"email": email}],
-        "extendedProperties": {"private": {"source": "portfolio-ai"}},
+        "extendedProperties": {"private": {"source": "portfolio-ai", "cancel_code": cancel_code}},
         "conferenceData": {
             "createRequest": {
                 "requestId": uuid.uuid4().hex,
@@ -212,12 +227,11 @@ def _meet_link(created: dict) -> str | None:
 
 def _ensure_slot_is_free(service, email: str, start: datetime, end: datetime):
     """Raise 409 if this visitor already has a meeting, or the slot is taken."""
-    mine = upcoming_visitor_events(service, email)
-    if mine:
-        when = fmt_when(event_range(mine[0])[0], event_tz(mine[0]))
+    # The time is not revealed here, so nobody can probe when someone else is booked.
+    if upcoming_visitor_events(service, email):
         raise HTTPException(
             status_code=409,
-            detail=f"ALREADY_BOOKED: {email} already has an upcoming meeting on {when}.",
+            detail=f"ALREADY_BOOKED: {email} already has an upcoming meeting.",
         )
 
     existing = (
@@ -250,6 +264,7 @@ def book_calendar_event(request: CalendarBookingRequest):
 
     tz_name = require_timezone(request.timezone)
     start, end, minutes = _booking_window(request, ZoneInfo(tz_name))
+    cancel_code = new_cancel_code()
 
     try:
         with BOOKING_LOCK:
@@ -259,7 +274,9 @@ def book_calendar_event(request: CalendarBookingRequest):
                 service.events()
                 .insert(
                     calendarId="primary",
-                    body=_event_body(name, email, request.message, start, end, tz_name),
+                    body=_event_body(
+                        name, email, request.message, start, end, tz_name, cancel_code
+                    ),
                     conferenceDataVersion=1,
                     sendUpdates="all",
                 )
@@ -289,6 +306,7 @@ def book_calendar_event(request: CalendarBookingRequest):
             "ayan_time": ayan_time,
             "event_link": created.get("htmlLink"),
             "meet_link": _meet_link(created),
+            "cancel_code": cancel_code,
         }
 
     except HTTPException:
@@ -304,20 +322,35 @@ def book_calendar_event(request: CalendarBookingRequest):
 @router.post("/calendar/cancel")
 def cancel_calendar_event(request: CalendarCancelRequest):
     email = clean_email(request.email)
+    check_not_locked(email)
     try:
         with BOOKING_LOCK:
             service = get_calendar_service()
-            events = upcoming_visitor_events(service, email)
-            if not events:
-                raise HTTPException(404, "No upcoming meeting found for this email.")
+
+            # Only meetings whose cancel code matches are cancelled. A wrong code and a
+            # missing meeting give the same answer, so nobody can probe which emails booked.
+            matching = [
+                e
+                for e in upcoming_visitor_events(service, email)
+                if codes_match(event_cancel_code(e), request.cancel_code)
+            ]
+            if not matching:
+                record_failure(email)
+                raise HTTPException(
+                    403,
+                    "NOT_VERIFIED: No upcoming meeting matches that email and cancel code. "
+                    "If the visitor lost the code, or the meeting was booked before codes "
+                    "existed, they can leave a message for Ayan instead.",
+                )
 
             cancelled = []
-            for e in events:
+            for e in matching:
                 service.events().delete(
                     calendarId="primary", eventId=e["id"], sendUpdates="all"
                 ).execute()
                 cancelled.append(fmt_when(event_range(e)[0], event_tz(e)))
 
+        clear_failures(email)
         try:
             send_email(
                 subject=f"Meeting cancelled: {email}",

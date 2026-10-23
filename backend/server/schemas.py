@@ -39,3 +39,4 @@ class CalendarBookingRequest(BaseModel):
 
 class CalendarCancelRequest(BaseModel):
     email: str = Field(..., min_length=3, max_length=200)
+    cancel_code: str = Field(..., min_length=4, max_length=32)

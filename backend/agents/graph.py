@@ -60,7 +60,8 @@ def book_meeting_tool(
             return (
                 f"Meeting successfully booked! When: {data.get('when')} "
                 f"(Ayan's time: {data.get('ayan_time')}). "
-                f"Google Meet link: {data.get('meet_link')}"
+                f"Google Meet link: {data.get('meet_link')}. "
+                f"Cancel code: {data.get('cancel_code')}"
             )
         return f"Failed to book meeting (HTTP {response.status_code}): {response.text}"
     except Exception as e:
@@ -122,12 +123,15 @@ def check_availability_tool(date: str, city_or_timezone: str, duration_minutes: 
 
 
 @tool
-def cancel_meeting_tool(email: str):
-    """Cancels the visitor's upcoming meeting with Ayan, found by their email address."""
+def cancel_meeting_tool(email: str, cancel_code: str):
+    """Cancels the visitor's own upcoming meeting. Needs the visitor's email AND the cancel code
+    they received when booking. Never guess or invent a code."""
     try:
         backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
         response = requests.post(
-            f"{backend_url}/calendar/cancel", json={"email": email}, timeout=20
+            f"{backend_url}/calendar/cancel",
+            json={"email": email, "cancel_code": cancel_code},
+            timeout=20,
         )
         if response.status_code == 200:
             return f"Cancelled: {', '.join(response.json().get('cancelled', []))}"
@@ -174,9 +178,10 @@ IMPORTANT RULES:
 12. If a visitor wants to send Ayan a message, note, or email about ANY topic (even if a meeting was already booked, or the message is unrelated to the meeting), call only `send_email_tool` with their name, email, and message. You never need to reveal Ayan's email address to do this, because the tool sends it for you. Reuse the name and email the visitor already gave earlier in the chat instead of asking again.
 13. Never say you booked or sent anything unless the tool returned success. If a tool fails, tell the visitor what failed in one short sentence.
 14. If the visitor gives a day but no exact time, or says Ayan can pick any time he is free, call `check_availability_tool` with that date and their city. Never guess free times yourself. Offer 3 or 4 of the returned slots (they are already in the visitor's local time) and ask which one they prefer. After they choose, call `book_meeting_tool` with the exact ISO start value from the tool result.
-15. If `book_meeting_tool` says ALREADY_BOOKED, tell the visitor they already have a meeting at the time given and ask whether they want to keep it or cancel it and book a new one. Do not send an email.
-16. If the visitor asks to cancel or reschedule, call `cancel_meeting_tool` with their email. For a reschedule, cancel first, then offer new slots as in rule 14. Report what the tool returned.
-17. If a tool says UNKNOWN_TIMEZONE, ask the visitor which city they are in and try again. For "today" or "tomorrow", use the visitor's local date and confirm the exact date and weekday back to them before booking. 
+15. If `book_meeting_tool` says ALREADY_BOOKED, tell the visitor that this email already has an upcoming meeting. Ask whether they want to keep it, or cancel it and book a new one (to cancel they need their cancel code). Do not send an email. Never say when the existing meeting is.
+16. To cancel or reschedule, you need BOTH the visitor's own email and the cancel code from when they booked. Ask for both, then call `cancel_meeting_tool`. For a reschedule, cancel first, then offer new slots as in rule 14. Never cancel on someone's say-so alone. If a visitor says another person's meeting is blocking their slot, explain that only the person who booked can cancel it, and offer to pick another time. If the tool says NOT_VERIFIED or TOO_MANY_ATTEMPTS, tell them it could not be verified and offer to send Ayan a message instead (rule 12).
+17. If a tool says UNKNOWN_TIMEZONE, ask the visitor which city they are in and try again. For "today" or "tomorrow", use the visitor's local date and confirm the exact date and weekday back to them before booking.
+18. After a successful booking, always tell the visitor their cancel code, and say they should save it (it is also in their calendar invite). Only ever share a cancel code in the conversation where the booking just happened. Never reveal, hint at or repeat a code for anyone else.
 """
 
 
