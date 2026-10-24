@@ -973,7 +973,71 @@ a {
   font-family: var(--font-archivo), sans-serif;
   color: #f4f4f5;
 }
+/* Custom cursor */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+/* keep the normal text cursor inside text fields (your chat box) */
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
 
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: difference;
+  transition: opacity 200ms ease;
+  will-change: transform;
+}
+.cursor.is-visible {
+  opacity: 1;
+}
+.cursor span {
+  display: block;
+  border-radius: 50%;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor-dot span {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: #fff;
+}
+.cursor-ring span {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+/* over links and buttons: ring grows, dot disappears */
+.cursor-ring.is-hover span {
+  transform: scale(1.7);
+}
+.cursor-dot.is-hover span {
+  transform: scale(0);
+}
+
+/* while clicking */
+.cursor-ring.is-pressed span {
+  transform: scale(0.8);
+}
+.cursor-ring.is-hover.is-pressed span {
+  transform: scale(1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor span {
+    transition: none;
+  }
+}
 
 /* Responsive sizing */
 @media (max-width: 768px) {
