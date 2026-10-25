@@ -102,7 +102,6 @@ async function handleSubmit(
 }
 
 function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-  // Enter sends, Shift+Enter makes a new line (and don't interrupt IME typing)
   if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
     event.preventDefault();
     event.currentTarget.form?.requestSubmit();
