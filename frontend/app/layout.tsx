@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" className={cn("font-sans", geist.variable)}>
      <body>
         <SmoothScrolling>
-          <CustomCursor />
+          {/* <CustomCursor /> */}
           {children}
         </SmoothScrolling>
       </body>

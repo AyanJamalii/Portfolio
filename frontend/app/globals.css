@@ -455,14 +455,15 @@ a {
 .project-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   margin-top: 22px;
 }
 .project-actions a {
   border: 1px solid #ededed33;
   border-radius: 4px;
-  padding: 8px 40px;
+  padding: 10px 48px; /* Thodi ziada width/padding */
   font-size: 14px;
+  text-align: center;
   transition: background .18s, color .18s;
 }
 .project-actions a:first-child {
@@ -1219,6 +1220,14 @@ html.has-custom-cursor [contenteditable="true"] {
   }
   .project-image {
     min-height: 360px;
+  }
+  /* Mobile par buttons ek line mein 100% width ke sath */
+  .project-actions {
+    flex-direction: column;
+  }
+  .project-actions a {
+    width: 100%;
+    box-sizing: border-box;
   }
   .about-grid {
     grid-template-columns: 1fr;

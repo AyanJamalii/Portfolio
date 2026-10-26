@@ -125,6 +125,20 @@ export default function Home() {
   /*
    * PROJECT / ABOUT SCROLL SPY
    */
+
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const checkScreenSize = () => {
+    setIsMobile(window.innerWidth <= 768); // 768px ya jo bhi aapka mobile breakpoint ho
+  };
+  
+  checkScreenSize();
+  window.addEventListener('resize', checkScreenSize);
+  return () => window.removeEventListener('resize', checkScreenSize);
+}, []);
+
+
   useEffect(() => {
     const handleScroll = () => {
       const projectsSection = document.getElementById("projects");
@@ -376,32 +390,32 @@ export default function Home() {
 
               <div className="about-skills">
                 <FolderFloat
-                  className="about-folder"
-                  items={skills}
-                  label="My Skills"
-                  sublabel={`${skills.length} skills`}
-                  trigger="hover"
-                  closeOnSelect
-                  physics
-                  drift={0.5}
-                  folderColor="#3f3f46"
-                  frontColor="#52525b"
-                  paperColor="#f5f5f5"
-                  itemColor="#f5f5f5"
-                  itemTextColor="#18181b"
-                  labelColor="#f5f5f5"
-                  width={200}
-                  height={148}
-                  radius={14}
-                  spread={180}
-                  lift={26}
-                  tilt={8}
-                  flapAngle={34}
-                  restAngle={16}
-                  openDuration={520}
-                  stagger={45}
-                  bounce={0.3}
-                />
+    className="about-folder"
+    items={skills}
+    label={isMobile ? "My Skills (Hold)" : "My Skills"}
+    sublabel={`${skills.length} skills`}
+    trigger="hover"
+    closeOnSelect
+    physics
+    drift={0.5}
+    folderColor="#3f3f46"
+    frontColor="#52525b"
+    paperColor="#f5f5f5"
+    itemColor="#f5f5f5"
+    itemTextColor="#18181b"
+    labelColor="#f5f5f5"
+    width={200}
+    height={148}
+    radius={14}
+    spread={180}
+    lift={26}
+    tilt={8}
+    flapAngle={34}
+    restAngle={16}
+    openDuration={520}
+    stagger={45}
+    bounce={0.3}
+  />
               </div>
             </div>
           </div>
