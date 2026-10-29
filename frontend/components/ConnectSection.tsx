@@ -14,7 +14,7 @@ const socialLinks = [
   {
     name: "LinkedIn",
     url: "https://www.linkedin.com/in/muhammad-ayan-696272316/",
-    icon: "/linkedIn.webp",
+    icon: "/linkedinn.webp",
   },
   {
     name: "Discord",
