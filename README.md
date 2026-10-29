@@ -9,6 +9,6 @@ Personal portfolio featuring an AI assistant.
 
 ## Project Structure
 
-- rontend/ — Portfolio website
-- ackend/ — AI assistant and API
-- server_update/ — Server update files
+- frontend/ - Portfolio website
+- backend/ - AI assistant and API
+- server_update/ - Server update files
