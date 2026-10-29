@@ -14,7 +14,7 @@ const socialLinks = [
   {
     name: "LinkedIn",
     url: "https://www.linkedin.com/in/muhammad-ayan-696272316/",
-    icon: "/Linkedin.webp",
+    icon: "/linkedIn.webp",
   },
   {
     name: "Discord",
@@ -23,6 +23,7 @@ const socialLinks = [
   },
 ];
 
+// AI SECTIONNNN
 export default function ConnectSection() {
   return (
     <section className="content-section connect-section">
