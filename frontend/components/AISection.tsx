@@ -112,8 +112,6 @@ function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
 return (
     <section id="ai" className="ai-section">
       <div className="ai-intro">
-        <span className="ai-kicker">/ Interactive Persona</span>
-
         <h2>
           Know more
           <br />
